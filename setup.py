@@ -18,7 +18,7 @@ setup(name='wim',
       license='BSD',
       packages=['wim'],
       entry_points={
-          'console_scripts': ['wimsh = wim.command_line:main'],
+          'console_scripts': ['wimsh = wim.wimsh:main'],
       },
       test_suite='nose.collector',
       tests_require=['nose'])
