@@ -3,8 +3,10 @@ from __future__ import print_function
 from pyparsing import oneOf, StringEnd, Literal, Forward
 from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex
 from pyparsing import Optional, Or, White, Word, OneOrMore
-import sys
 from gi.repository import Wnck
+
+from .command import (UnknownCommand, ShadeCommand,
+                      MaximizeVerticalCommand, UnmaximizeVerticalCommand)
 
 
 number = OneOrMore(Word(nums))
@@ -120,42 +122,3 @@ def Runner(expression):
     selector = Selector(expression['selector']).results()
     command = mappings.get(expression['action'], UnknownCommand)
     return command(expression, selector)
-
-
-class UnknownCommand:
-    def __init__(self, expression, selector):
-        self.expression = expression
-
-    def run(self):
-        command = self.expression['action']
-        print("Unknown command: %s" % command, file=sys.stderr)
-
-
-class ShadeCommand:
-    def __init__(self, expression, selector):
-        self.expression = expression
-        self.selector = selector
-
-    def run(self):
-        for window in self.selector:
-            Wnck.Window.shade(window)
-
-
-class MaximizeVerticalCommand:
-    def __init__(self, expression, selector):
-        self.expression = expression
-        self.selector = selector
-
-    def run(self):
-        for window in self.selector:
-            Wnck.Window.maximize_vertically(window)
-
-
-class UnmaximizeVerticalCommand:
-    def __init__(self, expression, selector):
-        self.expression = expression
-        self.selector = selector
-
-    def run(self):
-        for window in self.selector:
-            Wnck.Window.unmaximize_vertically(window)
