@@ -113,7 +113,9 @@ class Selector:
 
 def Runner(expression):
     mappings = {
-        's': ShadeCommand
+        's': ShadeCommand,
+        'vM': MaximizeVerticalCommand,
+        'uV': UnmaximizeVerticalCommand,
     }
     selector = Selector(expression['selector']).results()
     command = mappings.get(expression['action'], UnknownCommand)
@@ -137,3 +139,23 @@ class ShadeCommand:
     def run(self):
         for window in self.selector:
             Wnck.Window.shade(window)
+
+
+class MaximizeVerticalCommand:
+    def __init__(self, expression, selector):
+        self.expression = expression
+        self.selector = selector
+
+    def run(self):
+        for window in self.selector:
+            Wnck.Window.maximize_vertically(window)
+
+
+class UnmaximizeVerticalCommand:
+    def __init__(self, expression, selector):
+        self.expression = expression
+        self.selector = selector
+
+    def run(self):
+        for window in self.selector:
+            Wnck.Window.unmaximize_vertically(window)
