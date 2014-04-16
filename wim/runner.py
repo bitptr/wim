@@ -1,5 +1,5 @@
 import cmd
-from .language import parser, RunnerFor
+from .language import parser, Runner
 from pyparsing import ParseException
 
 
@@ -13,7 +13,7 @@ class InteractiveWim(cmd.Cmd):
 
     def default(self, line):
         command = self._parse(line)
-        runner = RunnerFor(command)
+        runner = Runner(command)
         return runner.run()
 
     def _parse(self, line):

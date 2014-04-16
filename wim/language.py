@@ -4,6 +4,7 @@ from pyparsing import oneOf, StringEnd, Literal, Forward
 from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex
 from pyparsing import Optional, Or, White, Word, OneOrMore
 import sys
+from gi.repository import Wnck
 
 
 number = OneOrMore(Word(nums))
@@ -85,17 +86,54 @@ selector << Or([
     Literal('#')
 ])
 
-parser = Or([selector + action + obj, other]) + StringEnd()
+parser = Or([
+    selector.setResultsName('selector') +
+    action.setResultsName('action') +
+    obj.setResultsName('object'),
+    other
+]) + StringEnd()
 parser.ignore(comment)
 
 
-def RunnerFor(command):
-    return UnknownCommand(command)
+class Selector:
+    def __init__(self, selector_expr):
+        self.selector_expr = selector_expr
+
+    def results(self):
+        Wnck.Screen.force_update(self._screen())
+
+        if self.selector_expr == '%':
+            return [Wnck.Screen.get_active_window(self._screen())]
+        else:
+            return []
+
+    def _screen(self):
+        return Wnck.Screen.get_default()
+
+
+def Runner(expression):
+    mappings = {
+        's': ShadeCommand
+    }
+    selector = Selector(expression['selector']).results()
+    command = mappings.get(expression['action'], UnknownCommand)
+    return command(expression, selector)
 
 
 class UnknownCommand:
-    def __init__(self, command):
-        self.command = command
+    def __init__(self, expression, selector):
+        self.expression = expression
 
     def run(self):
-        print("Unknown command: %s" % self.command, file=sys.stderr)
+        command = self.expression['action']
+        print("Unknown command: %s" % command, file=sys.stderr)
+
+
+class ShadeCommand:
+    def __init__(self, expression, selector):
+        self.expression = expression
+        self.selector = selector
+
+    def run(self):
+        for window in self.selector:
+            Wnck.Window.shade(window)
