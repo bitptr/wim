@@ -1,6 +1,9 @@
+from __future__ import print_function
+
 from pyparsing import oneOf, StringEnd, Literal, Forward
 from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex
 from pyparsing import Optional, Or, White, Word, OneOrMore
+import sys
 
 
 number = OneOrMore(Word(nums))
@@ -86,9 +89,13 @@ parser = Or([selector + action + obj, other]) + StringEnd()
 parser.ignore(comment)
 
 
-class RunnerFor:
+def RunnerFor(command):
+    return UnknownCommand(command)
+
+
+class UnknownCommand:
     def __init__(self, command):
         self.command = command
 
     def run(self):
-        pass
+        print("Unknown command: %s" % self.command, file=sys.stderr)
