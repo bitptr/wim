@@ -5,8 +5,12 @@ from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex
 from pyparsing import Optional, Or, White, Word, OneOrMore
 from gi.repository import Wnck
 
-from .command import (UnknownCommand, ShadeCommand,
-                      MaximizeVerticalCommand, UnmaximizeVerticalCommand)
+from .command import (UnknownCommand,
+                      ShadeCommand,
+                      MaximizeVerticalCommand,
+                      UnmaximizeVerticalCommand,
+                      MaximizeHorizontalCommand,
+                      UnmaximizeHorizontalCommand)
 
 
 number = OneOrMore(Word(nums))
@@ -118,6 +122,8 @@ def Runner(expression):
         's': ShadeCommand,
         'vM': MaximizeVerticalCommand,
         'uV': UnmaximizeVerticalCommand,
+        'hM': MaximizeHorizontalCommand,
+        'uH': UnmaximizeHorizontalCommand,
     }
     selector = Selector(expression['selector']).results()
     command = mappings.get(expression['action'], UnknownCommand)
