@@ -10,7 +10,9 @@ from .command import (UnknownCommand,
                       MaximizeVerticalCommand,
                       UnmaximizeVerticalCommand,
                       MaximizeHorizontalCommand,
-                      UnmaximizeHorizontalCommand)
+                      UnmaximizeHorizontalCommand,
+                      MaximizeCommand,
+                      UnmaximizeCommand)
 
 
 number = OneOrMore(Word(nums))
@@ -124,6 +126,30 @@ def Runner(expression):
         'uV': UnmaximizeVerticalCommand,
         'hM': MaximizeHorizontalCommand,
         'uH': UnmaximizeHorizontalCommand,
+        'm': UnknownCommand,
+        'tS': UnknownCommand,
+        'j': UnknownCommand,
+        'M': MaximizeCommand,
+        'uM': UnmaximizeCommand,
+        'x': UnknownCommand,
+        'p': UnknownCommand,
+        'uP': UnknownCommand,
+        'S': UnknownCommand,
+        'uS': UnknownCommand,
+        'kP': UnknownCommand,
+        'kT': UnknownCommand,
+        'f': UnknownCommand,
+        'n': UnknownCommand,
+        'uN': UnknownCommand,
+        'a': UnknownCommand,
+        'uA': UnknownCommand,
+        'b': UnknownCommand,
+        'uB': UnknownCommand,
+        'yM': UnknownCommand,
+        'yS': UnknownCommand,
+        'r': UnknownCommand,
+        'wC': UnknownCommand,
+        'wL': UnknownCommand,
     }
     selector = Selector(expression['selector']).results()
     command = mappings.get(expression['action'], UnknownCommand)

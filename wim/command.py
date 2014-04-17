@@ -46,3 +46,13 @@ class MaximizeHorizontalCommand(Command):
 class UnmaximizeHorizontalCommand(Command):
     def _modification(self, selection):
         Wnck.Window.unmaximize_horizontally(selection)
+
+
+class MaximizeCommand(Command):
+    def _modification(self, selection):
+        Wnck.Window.maximize(selection)
+
+
+class UnmaximizeCommand(Command):
+    def _modification(self, selection):
+        Wnck.Window.unmaximize(selection)
