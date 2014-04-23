@@ -3,7 +3,8 @@ from __future__ import print_function
 from gi.repository import Wnck
 import sys
 
-from .predicate import (XidPredicate)
+from .predicate import (XidPredicate,
+                        ClassPredicate)
 
 
 class UnknownSelector(object):
@@ -52,7 +53,7 @@ class WindowPredicateSelector(object):
         if self.predicate_expr[0] == '#':
             return XidPredicate(self.predicate_expr)
         elif self.predicate_expr[0] == '.':
-            pass
+            return ClassPredicate(self.predicate_expr)
         elif self.predicate_expr[0] == '@':
             pass
         elif self.predicate_expr[0] == '&':
