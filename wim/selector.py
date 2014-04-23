@@ -9,12 +9,11 @@ class CurrentWindowSelector(object):
         self.selector_expr = selector_expr
 
     def runWindow(self, modification):
-        for selection in self._windows():
-            modification(selection)
+        modification(self._window())
 
-    def _windows(self):
+    def _window(self):
         Wnck.Screen.force_update(self._screen())
-        return [Wnck.Screen.get_active_window(self._screen())]
+        return Wnck.Screen.get_active_window(self._screen())
 
     def _screen(self):
         return Wnck.Screen.get_default()
