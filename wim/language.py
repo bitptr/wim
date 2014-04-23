@@ -107,7 +107,11 @@ class Selector:
     def __init__(self, selector_expr):
         self.selector_expr = selector_expr
 
-    def results(self):
+    def runWindow(self, modification):
+        for selection in self._windows():
+            modification(selection)
+
+    def _windows(self):
         Wnck.Screen.force_update(self._screen())
 
         if self.selector_expr == '%':
@@ -151,6 +155,6 @@ def Runner(expression):
         'wC': UnknownCommand,
         'wL': UnknownCommand,
     }
-    selector = Selector(expression['selector']).results()
+    selector = Selector(expression['selector'])
     command = mappings.get(expression['action'], UnknownCommand)
     return command(expression, selector)
