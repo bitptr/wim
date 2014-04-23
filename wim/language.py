@@ -13,7 +13,8 @@ from .command import (UnknownCommand,
                       MaximizeCommand,
                       UnmaximizeCommand)
 from .selector import (UnknownSelector,
-                       CurrentWindowSelector)
+                       CurrentWindowSelector,
+                       WindowPredicateSelector)
 
 
 number = OneOrMore(Word(nums))
@@ -88,7 +89,7 @@ action = Or([
 
 selector << Or([
     Literal('g') + selector,
-    Literal('<') + Optional(predicates) + Literal('>'),
+    (Literal('<') + Optional(predicates) + Literal('>'))('window'),
     Literal('[') + Optional(predicates) + Literal(']'),
     Literal('{') + Optional(predicates) + Literal('}'),
     Literal('%'),
@@ -96,20 +97,20 @@ selector << Or([
 ])
 
 parser = Or([
-    selector.setResultsName('selector') +
-    action.setResultsName('action') +
-    obj.setResultsName('object'),
+    selector('selector') + action('action') + obj('object'),
     other
 ]) + StringEnd()
 parser.ignore(comment)
 
 
 class Selector(object):
-    def __new__(klass, selector_expr):
+    def __new__(klass, selector_expr, expression):
         if selector_expr == '%':
-            return CurrentWindowSelector(selector_expr)
+            return CurrentWindowSelector(selector_expr, expression)
+        elif selector_expr == '<':
+            return WindowPredicateSelector(selector_expr, expression)
         else:
-            return UnknownSelector(selector_expr)
+            return UnknownSelector(selector_expr, expression)
 
 
 def Runner(expression):
@@ -144,6 +145,6 @@ def Runner(expression):
         'wC': UnknownCommand,
         'wL': UnknownCommand,
     }
-    selector = Selector(expression['selector'])
+    selector = Selector(expression['selector'], expression)
     command = mappings.get(expression['action'], UnknownCommand)
     return command(expression, selector)
