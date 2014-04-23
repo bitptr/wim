@@ -3,7 +3,6 @@ from __future__ import print_function
 from pyparsing import oneOf, StringEnd, Literal, Forward
 from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex
 from pyparsing import Optional, Or, White, Word, OneOrMore
-from gi.repository import Wnck
 
 from .command import (UnknownCommand,
                       ShadeCommand,
@@ -13,6 +12,8 @@ from .command import (UnknownCommand,
                       UnmaximizeHorizontalCommand,
                       MaximizeCommand,
                       UnmaximizeCommand)
+from .selector import (UnknownSelector,
+                       CurrentWindowSelector)
 
 
 number = OneOrMore(Word(nums))
@@ -103,24 +104,12 @@ parser = Or([
 parser.ignore(comment)
 
 
-class Selector:
-    def __init__(self, selector_expr):
-        self.selector_expr = selector_expr
-
-    def runWindow(self, modification):
-        for selection in self._windows():
-            modification(selection)
-
-    def _windows(self):
-        Wnck.Screen.force_update(self._screen())
-
-        if self.selector_expr == '%':
-            return [Wnck.Screen.get_active_window(self._screen())]
+class Selector(object):
+    def __new__(klass, selector_expr):
+        if selector_expr == '%':
+            return CurrentWindowSelector(selector_expr)
         else:
-            return []
-
-    def _screen(self):
-        return Wnck.Screen.get_default()
+            return UnknownSelector(selector_expr)
 
 
 def Runner(expression):
