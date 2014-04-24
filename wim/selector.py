@@ -8,7 +8,8 @@ from .predicate import (XidPredicate,
                         NamePredicate,
                         PidPredicate,
                         TypePredicate,
-                        OffsetPredicate)
+                        OffsetPredicate,
+                        AllWindowsPredicate)
 
 
 class UnknownSelector(object):
@@ -54,7 +55,9 @@ class WindowPredicateSelector(object):
             return windows
 
     def _predicate(self):
-        if self.predicate_expr[0] == '#':
+        if len(self.predicate_expr) == 0:
+            return AllWindowsPredicate(self.predicate_expr)
+        elif self.predicate_expr[0] == '#':
             return XidPredicate(self.predicate_expr)
         elif self.predicate_expr[0] == '.':
             return ClassPredicate(self.predicate_expr)

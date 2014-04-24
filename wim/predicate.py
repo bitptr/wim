@@ -98,3 +98,8 @@ class OffsetPredicate(AllWindowsFilter):
     def _matcher(self, window):
         self.count += 1
         return (self.count == int(self.predicate))
+
+
+class AllWindowsPredicate(AllWindowsFilter):
+    def _matcher(self, window):
+        return True

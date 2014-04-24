@@ -51,7 +51,7 @@ class TestParser(TestCase):
         self.assertParse(s, exp)
 
     def test_current_window(self):
-        s = '<> " produce the current window'
+        s = '<> " produce all windows'
         exp = ['<', '>']
         self.assertParse(s, exp)
 
