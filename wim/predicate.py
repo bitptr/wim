@@ -1,17 +1,14 @@
 from gi.repository import Wnck
 
+from .util import maybe, singleton
+
 
 class XidPredicate(object):
     def __init__(self, predicate_expr):
         self.predicate_expr = predicate_expr
 
     def windows(self):
-        window = Wnck.Window.get(self.predicate)
-
-        if window is not None:
-            return [window]
-        else:
-            return []
+        return maybe([], singleton, Wnck.Window.get(self.predicate))
 
     @property
     def predicate(self):
@@ -23,20 +20,10 @@ class ClassPredicate(object):
         self.predicate_expr = predicate_expr
 
     def windows(self):
-        group = Wnck.ClassGroup.get(self.predicate)
+        def group_windows(group):
+            return (Wnck.ClassGroup.get_windows(group) or [])
 
-        if group is not None:
-            return self._group_windows(group)
-        else:
-            return []
-
-    def _group_windows(self, group):
-        windows = Wnck.ClassGroup.get_windows(group)
-
-        if windows is not None:
-            return windows
-        else:
-            return []
+        return maybe([], group_windows, Wnck.ClassGroup.get(self.predicate))
 
     @property
     def predicate(self):
