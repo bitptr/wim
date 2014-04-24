@@ -27,6 +27,14 @@ class ShadeCommand(WindowCommand):
         Wnck.Window.shade(selection)
 
 
+class ToggleShadeCommand(WindowCommand):
+    def _modification(self, selection):
+        if Wnck.Window.is_shaded(selection):
+            Wnck.Window.unshade(selection)
+        else:
+            Wnck.Window.shade(selection)
+
+
 class MaximizeVerticalCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.maximize_vertically(selection)
