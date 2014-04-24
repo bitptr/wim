@@ -4,7 +4,8 @@ from gi.repository import Wnck
 import sys
 
 from .predicate import (XidPredicate,
-                        ClassPredicate)
+                        ClassPredicate,
+                        NamePredicate)
 
 
 class UnknownSelector(object):
@@ -55,7 +56,7 @@ class WindowPredicateSelector(object):
         elif self.predicate_expr[0] == '.':
             return ClassPredicate(self.predicate_expr)
         elif self.predicate_expr[0] == '@':
-            pass
+            return NamePredicate(self.predicate_expr)
         elif self.predicate_expr[0] == '&':
             pass
         elif self.predicate_expr[0] == '?':

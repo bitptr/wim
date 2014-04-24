@@ -18,7 +18,7 @@ from .selector import (UnknownSelector,
 
 
 number = OneOrMore(Word(nums))
-string = OneOrMore(Word(alphas + '~-'))
+string = OneOrMore(Word(alphas + '~-/'))
 regexp = Literal('/') + string + Literal('/')
 x = Or([string, number, regexp])
 
