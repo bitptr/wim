@@ -7,7 +7,8 @@ from .predicate import (XidPredicate,
                         ClassPredicate,
                         NamePredicate,
                         PidPredicate,
-                        TypePredicate)
+                        TypePredicate,
+                        OffsetPredicate)
 
 
 class UnknownSelector(object):
@@ -64,7 +65,7 @@ class WindowPredicateSelector(object):
         elif self.predicate_expr[0] == '?':
             return TypePredicate(self.predicate_expr)
         elif self.predicate_expr[0].isdigit():
-            pass
+            return OffsetPredicate(self.predicate_expr)
         else:
             pass
 

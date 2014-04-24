@@ -44,7 +44,7 @@ class AllWindowsFilter(object):
 
     @property
     def screen_windows(self):
-        return Wnck.Screen.get_windows(self.screen)
+        return Wnck.Screen.get_windows_stacked(self.screen)
 
     @property
     def screen(self):
@@ -88,3 +88,13 @@ class TypePredicate(AllWindowsFilter):
             'utility': Wnck.WindowType.UTILITY,
         }
         return types[human]
+
+
+class OffsetPredicate(AllWindowsFilter):
+    def __init__(self, predicate_expr):
+        super(OffsetPredicate, self).__init__(predicate_expr)
+        self.count = -1
+
+    def _matcher(self, window):
+        self.count += 1
+        return (self.count == int(self.predicate))
