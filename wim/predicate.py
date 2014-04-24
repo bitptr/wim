@@ -30,17 +30,12 @@ class ClassPredicate(object):
         return self.predicate_expr[-1]
 
 
-class NamePredicate(object):
+class AllWindowsFilter(object):
     def __init__(self, predicate_expr):
         self.predicate_expr = predicate_expr
 
     def windows(self):
-        def name_matches(window):
-            is_on_workspace = Wnck.Window.is_on_workspace(
-                window, self.workspace)
-            name = Wnck.Window.get_name(window)
-            return is_on_workspace and (name == self.predicate)
-        return filter(name_matches, self.screen_windows)
+        return filter(self._matcher, self.screen_windows)
 
     @property
     def screen_windows(self):
@@ -57,3 +52,19 @@ class NamePredicate(object):
     @property
     def workspace(self):
         return Wnck.Screen.get_active_workspace(self.screen)
+
+
+class NamePredicate(AllWindowsFilter):
+    def _matcher(self, window):
+        is_on_workspace = Wnck.Window.is_on_workspace(
+            window, self.workspace)
+        name = Wnck.Window.get_name(window)
+        return is_on_workspace and (name == self.predicate)
+
+
+class PidPredicate(AllWindowsFilter):
+    def _matcher(self, window):
+        is_on_workspace = Wnck.Window.is_on_workspace(
+            window, self.workspace)
+        pid = Wnck.Window.get_pid(window)
+        return is_on_workspace and (pid == int(self.predicate))
