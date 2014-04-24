@@ -1,4 +1,7 @@
+from __future__ import print_function
+
 from gi.repository import Wnck
+import sys
 
 from .util import maybe, singleton
 
@@ -103,3 +106,12 @@ class OffsetPredicate(AllWindowsFilter):
 class AllWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
         return True
+
+
+class UnknownPredicate(object):
+    def __init__(self, predicate_expr):
+        self.predicate_expr = predicate_expr
+
+    def windows(self):
+        print("Unknown predicate: %s" % self.predicate_expr, file=sys.stderr)
+        return []
