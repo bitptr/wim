@@ -68,3 +68,24 @@ class PidPredicate(AllWindowsFilter):
             window, self.workspace)
         pid = Wnck.Window.get_pid(window)
         return is_on_workspace and (pid == int(self.predicate))
+
+
+class TypePredicate(AllWindowsFilter):
+    def _matcher(self, window):
+        is_on_workspace = Wnck.Window.is_on_workspace(
+            window, self.workspace)
+        win_type = Wnck.Window.get_window_type(window)
+        return is_on_workspace and (win_type == self._win_type(self.predicate))
+
+    def _win_type(self, human):
+        types = {
+            'desktop': Wnck.WindowType.DESKTOP,
+            'dialog': Wnck.WindowType.DIALOG,
+            'dock': Wnck.WindowType.DOCK,
+            'menu': Wnck.WindowType.MENU,
+            'normal': Wnck.WindowType.NORMAL,
+            'splashscreen': Wnck.WindowType.SPLASHSCREEN,
+            'toolbar': Wnck.WindowType.TOOLBAR,
+            'utility': Wnck.WindowType.UTILITY,
+        }
+        return types[human]

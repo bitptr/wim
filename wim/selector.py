@@ -6,7 +6,8 @@ import sys
 from .predicate import (XidPredicate,
                         ClassPredicate,
                         NamePredicate,
-                        PidPredicate)
+                        PidPredicate,
+                        TypePredicate)
 
 
 class UnknownSelector(object):
@@ -61,7 +62,7 @@ class WindowPredicateSelector(object):
         elif self.predicate_expr[0] == '&':
             return PidPredicate(self.predicate_expr)
         elif self.predicate_expr[0] == '?':
-            pass
+            return TypePredicate(self.predicate_expr)
         elif self.predicate_expr[0].isdigit():
             pass
         else:
