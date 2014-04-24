@@ -35,7 +35,12 @@ class AllWindowsFilter(object):
         self.predicate_expr = predicate_expr
 
     def windows(self):
-        return filter(self._matcher, self.screen_windows)
+        return filter(self._match, self.screen_windows)
+
+    def _match(self, window):
+        is_on_workspace = Wnck.Window.is_on_workspace(
+            window, self.workspace)
+        return is_on_workspace and self._matcher(window)
 
     @property
     def screen_windows(self):
@@ -56,26 +61,20 @@ class AllWindowsFilter(object):
 
 class NamePredicate(AllWindowsFilter):
     def _matcher(self, window):
-        is_on_workspace = Wnck.Window.is_on_workspace(
-            window, self.workspace)
         name = Wnck.Window.get_name(window)
-        return is_on_workspace and (name == self.predicate)
+        return (name == self.predicate)
 
 
 class PidPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        is_on_workspace = Wnck.Window.is_on_workspace(
-            window, self.workspace)
         pid = Wnck.Window.get_pid(window)
-        return is_on_workspace and (pid == int(self.predicate))
+        return (pid == int(self.predicate))
 
 
 class TypePredicate(AllWindowsFilter):
     def _matcher(self, window):
-        is_on_workspace = Wnck.Window.is_on_workspace(
-            window, self.workspace)
         win_type = Wnck.Window.get_window_type(window)
-        return is_on_workspace and (win_type == self._win_type(self.predicate))
+        return (win_type == self._win_type(self.predicate))
 
     def _win_type(self, human):
         types = {
