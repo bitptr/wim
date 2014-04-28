@@ -7,7 +7,7 @@ from .util import maybe, singleton
 
 
 class XidPredicate(object):
-    def __init__(self, predicate_expr):
+    def __init__(self, predicate_expr, model):
         self.predicate_expr = predicate_expr
 
     def windows(self):
@@ -19,7 +19,7 @@ class XidPredicate(object):
 
 
 class ClassPredicate(object):
-    def __init__(self, predicate_expr):
+    def __init__(self, predicate_expr, model):
         self.predicate_expr = predicate_expr
 
     def windows(self):
@@ -34,32 +34,19 @@ class ClassPredicate(object):
 
 
 class AllWindowsFilter(object):
-    def __init__(self, predicate_expr):
+    def __init__(self, predicate_expr, model):
         self.predicate_expr = predicate_expr
-
-    def windows(self):
-        return filter(self._match, self.screen_windows)
-
-    def _match(self, window):
-        is_on_workspace = Wnck.Window.is_on_workspace(
-            window, self.workspace)
-        return is_on_workspace and self._matcher(window)
-
-    @property
-    def screen_windows(self):
-        return Wnck.Screen.get_windows_stacked(self.screen)
-
-    @property
-    def screen(self):
-        return Wnck.Screen.get_default()
+        self.model = model
 
     @property
     def predicate(self):
         return self.predicate_expr[-1]
 
-    @property
-    def workspace(self):
-        return Wnck.Screen.get_active_workspace(self.screen)
+    def windows(self):
+        return filter(self._match, self.model.active_workspace_windows())
+
+    def _match(self, window):
+        return self._matcher(window)
 
 
 class NamePredicate(AllWindowsFilter):
@@ -94,8 +81,8 @@ class TypePredicate(AllWindowsFilter):
 
 
 class OffsetPredicate(AllWindowsFilter):
-    def __init__(self, predicate_expr):
-        super(OffsetPredicate, self).__init__(predicate_expr)
+    def __init__(self, predicate_expr, model):
+        super(OffsetPredicate, self).__init__(predicate_expr, model)
         self.count = -1
 
     def _matcher(self, window):
@@ -109,7 +96,7 @@ class AllWindowsPredicate(AllWindowsFilter):
 
 
 class UnknownPredicate(object):
-    def __init__(self, predicate_expr):
+    def __init__(self, predicate_expr, model):
         self.predicate_expr = predicate_expr
 
     def windows(self):

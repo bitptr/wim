@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-from gi.repository import Wnck
 import sys
 
 from .predicate import (XidPredicate,
@@ -14,7 +13,7 @@ from .predicate import (XidPredicate,
 
 
 class UnknownSelector(object):
-    def __init__(self, selector_expr, expr):
+    def __init__(self, selector_expr, expr, model):
         self.selector_expr = selector_expr
 
     def runWindow(self, modification):
@@ -22,31 +21,28 @@ class UnknownSelector(object):
 
 
 class CurrentWindowSelector(object):
-    def __init__(self, selector_expr, expr):
+    def __init__(self, selector_expr, expr, model):
         self.selector_expr = selector_expr
+        self.model = model
 
     def runWindow(self, modification):
         modification(self._window())
 
     def _window(self):
-        Wnck.Screen.force_update(self._screen())
-        return Wnck.Screen.get_active_window(self._screen())
-
-    def _screen(self):
-        return Wnck.Screen.get_default()
+        return self.model.active_window
 
 
 class WindowPredicateSelector(object):
-    def __init__(self, selector_expr, expression):
+    def __init__(self, selector_expr, expression, model):
         self.selector_expr = selector_expr
         self.expression = expression
+        self.model = model
 
     def runWindow(self, modification):
         for window in self._windows():
             modification(window)
 
     def _windows(self):
-        Wnck.Screen.force_update(self._screen())
         windows = self._predicate().windows()
 
         if len(windows) == 0:
@@ -57,25 +53,22 @@ class WindowPredicateSelector(object):
 
     def _predicate(self):
         if len(self.predicate_expr) == 0:
-            return AllWindowsPredicate(self.predicate_expr)
+            return AllWindowsPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '#':
-            return XidPredicate(self.predicate_expr)
+            return XidPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '.':
-            return ClassPredicate(self.predicate_expr)
+            return ClassPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '@':
-            return NamePredicate(self.predicate_expr)
+            return NamePredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '&':
-            return PidPredicate(self.predicate_expr)
+            return PidPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '?':
-            return TypePredicate(self.predicate_expr)
+            return TypePredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0].isdigit():
-            return OffsetPredicate(self.predicate_expr)
+            return OffsetPredicate(self.predicate_expr, self.model)
         else:
-            return UnknownPredicate(self.predicate_expr)
+            return UnknownPredicate(self.predicate_expr, self.model)
 
     @property
     def predicate_expr(self):
         return self.expression['window'][1:-1]
-
-    def _screen(self):
-        return Wnck.Screen.get_default()

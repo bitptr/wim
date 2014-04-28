@@ -104,16 +104,16 @@ parser.ignore(comment)
 
 
 class Selector(object):
-    def __new__(klass, selector_expr, expression):
+    def __new__(klass, selector_expr, expression, model):
         if selector_expr == '%':
-            return CurrentWindowSelector(selector_expr, expression)
+            return CurrentWindowSelector(selector_expr, expression, model)
         elif selector_expr == '<':
-            return WindowPredicateSelector(selector_expr, expression)
+            return WindowPredicateSelector(selector_expr, expression, model)
         else:
-            return UnknownSelector(selector_expr, expression)
+            return UnknownSelector(selector_expr, expression, model)
 
 
-def Runner(expression):
+def Runner(expression, model):
     mappings = {
         's': ShadeCommand,
         'vM': MaximizeVerticalCommand,
@@ -145,6 +145,6 @@ def Runner(expression):
         'wC': UnknownCommand,
         'wL': UnknownCommand,
     }
-    selector = Selector(expression['selector'], expression)
+    selector = Selector(expression['selector'], expression, model)
     command = mappings.get(expression['action'], UnknownCommand)
     return command(expression, selector)
