@@ -58,8 +58,9 @@ class Model(object):
         self.workspaces[workspace].append(window)
 
     def _remove_window(self, screen, window):
-        workspace = Wnck.Window.get_workspace(window)
-        self.workspaces[workspace].remove(window)
+        if window:
+            workspace = Wnck.Window.get_workspace(window)
+            self.workspaces[workspace].remove(window)
 
     def _add_workspace(self, screen, workspace):
         self.workspaces[workspace] = []

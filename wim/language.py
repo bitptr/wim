@@ -13,7 +13,8 @@ from .command import (UnknownCommand,
                       MaximizeCommand,
                       UnmaximizeCommand,
                       ToggleShadeCommand,
-                      CloseCommand)
+                      CloseCommand,
+                      PinCommand)
 from .selector import (UnknownSelector,
                        CurrentWindowSelector,
                        WindowPredicateSelector,
@@ -131,7 +132,7 @@ def Runner(expression, model):
         'M': MaximizeCommand,
         'uM': UnmaximizeCommand,
         'x': CloseCommand,
-        'p': UnknownCommand,
+        'p': PinCommand,
         'uP': UnknownCommand,
         'S': UnknownCommand,
         'uS': UnknownCommand,
