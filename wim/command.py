@@ -48,6 +48,11 @@ class PinCommand(WindowCommand):
         Wnck.Window.pin(selection)
 
 
+class UnpinCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.unpin(selection)
+
+
 class MaximizeVerticalCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.maximize_vertically(selection)
