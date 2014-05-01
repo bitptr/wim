@@ -14,7 +14,8 @@ from .command import (UnknownCommand,
                       UnmaximizeCommand)
 from .selector import (UnknownSelector,
                        CurrentWindowSelector,
-                       WindowPredicateSelector)
+                       WindowPredicateSelector,
+                       PriorWindowSelector)
 
 
 number = OneOrMore(Word(nums))
@@ -107,6 +108,8 @@ class Selector(object):
     def __new__(klass, selector_expr, expression, model):
         if selector_expr == '%':
             return CurrentWindowSelector(selector_expr, expression, model)
+        elif selector_expr == '#':
+            return PriorWindowSelector(selector_expr, expression, model)
         elif selector_expr == '<':
             return WindowPredicateSelector(selector_expr, expression, model)
         else:

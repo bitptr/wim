@@ -32,6 +32,18 @@ class CurrentWindowSelector(object):
         return self.model.active_window
 
 
+class PriorWindowSelector(object):
+    def __init__(self, selector_expr, expr, model):
+        self.selector_expr = selector_expr
+        self.model = model
+
+    def runWindow(self, modification):
+        modification(self._window())
+
+    def _window(self):
+        return self.model.prior_window
+
+
 class WindowPredicateSelector(object):
     def __init__(self, selector_expr, expression, model):
         self.selector_expr = selector_expr
