@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import datetime
+import calendar
 from gi.repository import Wnck
 import sys
 
@@ -33,6 +35,12 @@ class ToggleShadeCommand(WindowCommand):
             Wnck.Window.unshade(selection)
         else:
             Wnck.Window.shade(selection)
+
+
+class CloseCommand(WindowCommand):
+    def _modification(self, selection):
+        now = calendar.timegm(datetime.datetime.utcnow().timetuple())
+        Wnck.Window.close(selection, now)
 
 
 class MaximizeVerticalCommand(WindowCommand):
