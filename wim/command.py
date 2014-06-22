@@ -142,3 +142,8 @@ class UnbelowCommand(WindowCommand):
 class KeyboardMoveCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.keyboard_move(selection)
+
+
+class KeyboardSizeCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.keyboard_size(selection)
