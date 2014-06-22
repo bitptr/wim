@@ -68,6 +68,11 @@ class SkipPagerCommand(WindowCommand):
         Wnck.Window.set_skip_pager(selection, True)
 
 
+class SkipTasklistCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.set_skip_tasklist(selection, True)
+
+
 class MaximizeVerticalCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.maximize_vertically(selection)
