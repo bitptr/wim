@@ -16,7 +16,8 @@ from .command import (UnknownCommand,
                       CloseCommand,
                       PinCommand,
                       UnpinCommand,
-                      StickCommand)
+                      StickCommand,
+                      UnstickCommand)
 from .selector import (UnknownSelector,
                        CurrentWindowSelector,
                        WindowPredicateSelector,
@@ -137,7 +138,7 @@ def Runner(expression, model):
         'p': PinCommand,
         'uP': UnpinCommand,
         'S': StickCommand,
-        'uS': UnknownCommand,
+        'uS': UnstickCommand,
         'kP': UnknownCommand,
         'kT': UnknownCommand,
         'f': UnknownCommand,
