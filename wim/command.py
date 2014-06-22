@@ -53,6 +53,11 @@ class UnpinCommand(WindowCommand):
         Wnck.Window.unpin(selection)
 
 
+class StickCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.stick(selection)
+
+
 class MaximizeVerticalCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.maximize_vertically(selection)
