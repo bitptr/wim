@@ -22,7 +22,8 @@ from .command import (UnknownCommand,
                       SkipTasklistCommand,
                       FullscreenCommand,
                       MinimizeCommand,
-                      UnminimizeCommand)
+                      UnminimizeCommand,
+                      AboveCommand)
 from .selector import (UnknownSelector,
                        CurrentWindowSelector,
                        WindowPredicateSelector,
@@ -149,7 +150,7 @@ def Runner(expression, model):
         'f': FullscreenCommand,
         'n': MinimizeCommand,
         'uN': UnminimizeCommand,
-        'a': UnknownCommand,
+        'a': AboveCommand,
         'uA': UnknownCommand,
         'b': UnknownCommand,
         'uB': UnknownCommand,

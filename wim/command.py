@@ -117,3 +117,8 @@ class UnminimizeCommand(WindowCommand):
     def _modification(self, selection):
         now = calendar.timegm(datetime.datetime.utcnow().timetuple())
         Wnck.Window.unminimize(selection, now)
+
+
+class AboveCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.make_above(selection)
