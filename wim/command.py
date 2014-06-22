@@ -111,3 +111,9 @@ class UnmaximizeCommand(WindowCommand):
 class MinimizeCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.minimize(selection)
+
+
+class UnminimizeCommand(WindowCommand):
+    def _modification(self, selection):
+        now = calendar.timegm(datetime.datetime.utcnow().timetuple())
+        Wnck.Window.unminimize(selection, now)
