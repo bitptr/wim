@@ -63,6 +63,11 @@ class UnstickCommand(WindowCommand):
         Wnck.Window.unstick(selection)
 
 
+class SkipPagerCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.set_skip_pager(selection, True)
+
+
 class MaximizeVerticalCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.maximize_vertically(selection)
