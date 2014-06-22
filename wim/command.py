@@ -73,6 +73,11 @@ class SkipTasklistCommand(WindowCommand):
         Wnck.Window.set_skip_tasklist(selection, True)
 
 
+class FullscreenCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.set_fullscreen(selection, True)
+
+
 class MaximizeVerticalCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.maximize_vertically(selection)

@@ -19,7 +19,8 @@ from .command import (UnknownCommand,
                       StickCommand,
                       UnstickCommand,
                       SkipPagerCommand,
-                      SkipTasklistCommand)
+                      SkipTasklistCommand,
+                      FullscreenCommand)
 from .selector import (UnknownSelector,
                        CurrentWindowSelector,
                        WindowPredicateSelector,
@@ -143,7 +144,7 @@ def Runner(expression, model):
         'uS': UnstickCommand,
         'kP': SkipPagerCommand,
         'kT': SkipTasklistCommand,
-        'f': UnknownCommand,
+        'f': FullscreenCommand,
         'n': UnknownCommand,
         'uN': UnknownCommand,
         'a': UnknownCommand,
