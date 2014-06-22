@@ -106,3 +106,8 @@ class MaximizeCommand(WindowCommand):
 class UnmaximizeCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.unmaximize(selection)
+
+
+class MinimizeCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.minimize(selection)
