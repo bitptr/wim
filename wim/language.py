@@ -26,7 +26,8 @@ from .command import (UnknownCommand,
                       AboveCommand,
                       UnaboveCommand,
                       BelowCommand,
-                      UnbelowCommand)
+                      UnbelowCommand,
+                      KeyboardMoveCommand)
 from .selector import (UnknownSelector,
                        CurrentWindowSelector,
                        WindowPredicateSelector,
@@ -157,7 +158,7 @@ def Runner(expression, model):
         'uA': UnaboveCommand,
         'b': BelowCommand,
         'uB': UnbelowCommand,
-        'yM': UnknownCommand,
+        'yM': KeyboardMoveCommand,
         'yS': UnknownCommand,
         'r': UnknownCommand,
         'wC': UnknownCommand,

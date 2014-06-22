@@ -137,3 +137,8 @@ class BelowCommand(WindowCommand):
 class UnbelowCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.unmake_below(selection)
+
+
+class KeyboardMoveCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.keyboard_move(selection)
