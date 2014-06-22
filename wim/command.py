@@ -127,3 +127,13 @@ class AboveCommand(WindowCommand):
 class UnaboveCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.unmake_above(selection)
+
+
+class BelowCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.make_below(selection)
+
+
+class UnbelowCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.unmake_below(selection)
