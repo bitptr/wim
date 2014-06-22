@@ -122,3 +122,8 @@ class UnminimizeCommand(WindowCommand):
 class AboveCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.make_above(selection)
+
+
+class UnaboveCommand(WindowCommand):
+    def _modification(self, selection):
+        Wnck.Window.unmake_above(selection)
