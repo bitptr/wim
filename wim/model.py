@@ -8,6 +8,7 @@ class Model(object):
         self.prior_window = None
         self.active_workspace = None
         self.prior_workspace = None
+        self.windows = {}
 
     def startup(self):
         GObject.signal_connect_closure(
@@ -53,10 +54,25 @@ class Model(object):
     def screen(self):
         return Wnck.Screen.get_default()
 
+    def geometry_for(self, window):
+        if window in self.windows and 'geometry' in self.windows[window]:
+            return self.windows[window]['geometry']
+        else:
+            return Wnck.Window.get_geometry(window)
+
+    def move_window(self, window, x, y, w, h):
+        Wnck.Window.set_geometry(
+            window,
+            Wnck.WindowGravity.STATIC,
+            Wnck.WindowMoveResizeMask.X | Wnck.WindowMoveResizeMask.Y,
+            x, y, w, h)
+
     def _add_window(self, screen, window):
         workspace = Wnck.Window.get_workspace(window)
         if workspace:
             self.workspaces[workspace].append(window)
+        GObject.signal_connect_closure(
+            window, "geometry-changed", self._geometry_changed, True)
 
     def _remove_window(self, screen, window):
         if window:
@@ -77,3 +93,10 @@ class Model(object):
     def _set_active_workspace(self, screen, prior_workspace):
         self.prior_workspace = prior_workspace
         self.active_workspace = Wnck.Screen.get_active_workspace(screen)
+
+    def _geometry_changed(self, window):
+        geometry = Wnck.Window.get_geometry(window)
+        if window:
+            if window not in self.windows:
+                self.windows[window] = {}
+            self.windows[window]['geometry'] = geometry

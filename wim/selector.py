@@ -28,6 +28,9 @@ class CurrentWindowSelector(object):
     def runWindow(self, modification):
         modification(self._window())
 
+    def moveTo(self, direction):
+        direction.move(self._window())
+
     def _window(self):
         return self.model.active_window
 

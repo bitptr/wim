@@ -28,17 +28,19 @@ from .command import (UnknownCommand,
                       BelowCommand,
                       UnbelowCommand,
                       KeyboardMoveCommand,
-                      KeyboardSizeCommand)
+                      KeyboardSizeCommand,
+                      MoveCommand)
 from .selector import (UnknownSelector,
                        CurrentWindowSelector,
                        WindowPredicateSelector,
                        PriorWindowSelector)
+from .direction import *
 
 
 number = OneOrMore(Word(nums))
 string = OneOrMore(Word(alphas + '~-/'))
 regexp = Literal('/') + string + Literal('/')
-x = Or([string, number, regexp])
+x = Or([string, number, regexp])('identifier')
 
 predicate = Or([
     Literal('#') + x,
@@ -52,7 +54,7 @@ predicate = Or([
 and_predicate = Forward()
 and_predicate << Or([
     predicate + White() + and_predicate,
-    predicate
+    predicate('predicate')
 ])
 
 predicates = Forward()
@@ -67,8 +69,8 @@ other = Or([Keyword('windows'), Keyword('desktop')])
 
 selector = Forward()
 
-obj = ZeroOrMore(oneOf(list(nums))) + Optional(Or([
-    oneOf(['r', 'l', 'u', 'd', 'n', 's', 'e', 'w', 'p']),
+direction = ZeroOrMore(oneOf(list(nums)))('count') + Optional(Or([
+    oneOf(['r', 'l', 'u', 'd', 'n', 's', 'e', 'w', 'p'])('logical'),
     selector
 ]))
 
@@ -106,16 +108,16 @@ action = Or([
 ])
 
 selector << Or([
-    Literal('g') + selector,
+    (Literal('g') + selector)('global'),
     (Literal('<') + Optional(predicates) + Literal('>'))('window'),
-    Literal('[') + Optional(predicates) + Literal(']'),
-    Literal('{') + Optional(predicates) + Literal('}'),
-    Literal('%'),
-    Literal('#')
+    (Literal('[') + Optional(predicates) + Literal(']'))('workspace'),
+    (Literal('{') + Optional(predicates) + Literal('}'))('application'),
+    Literal('%')('current'),
+    Literal('#')('prior')
 ])
 
 parser = Or([
-    selector('selector') + action('action') + obj('object'),
+    selector('selector') + action('action') + direction('direction'),
     other
 ]) + StringEnd()
 parser.ignore(comment)
@@ -133,6 +135,22 @@ class Selector(object):
             return UnknownSelector(selector_expr, expression, model)
 
 
+class Direction(object):
+    def __new__(klass, direction_expr, expression, model):
+        count = 1
+        if 'count' in expression:
+            count = int(''.join(expression['count']))
+
+        logical = {
+            'r': RightDirection
+        }
+
+        if 'logical' in expression:
+            return logical[expression['logical']](model, count)
+        else:
+            return Selector(direction_expr, expression, model)
+
+
 def Runner(expression, model):
     mappings = {
         's': ShadeCommand,
@@ -140,7 +158,7 @@ def Runner(expression, model):
         'uV': UnmaximizeVerticalCommand,
         'hM': MaximizeHorizontalCommand,
         'uH': UnmaximizeHorizontalCommand,
-        'm': UnknownCommand,
+        'm': MoveCommand,
         'tS': ToggleShadeCommand,
         'j': UnknownCommand,
         'M': MaximizeCommand,
@@ -167,4 +185,5 @@ def Runner(expression, model):
     }
     selector = Selector(expression['selector'], expression, model)
     command = mappings.get(expression['action'], UnknownCommand)
-    return command(expression, selector)
+    direction = Direction(expression['direction'], expression, model)
+    return command(expression, selector, direction)

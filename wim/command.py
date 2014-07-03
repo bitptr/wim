@@ -7,7 +7,7 @@ import sys
 
 
 class UnknownCommand:
-    def __init__(self, expression, selector):
+    def __init__(self, expression, selector, obj):
         self.expression = expression
 
     def run(self):
@@ -16,7 +16,7 @@ class UnknownCommand:
 
 
 class WindowCommand:
-    def __init__(self, expression, selector):
+    def __init__(self, expression, selector, obj):
         self.expression = expression
         self.selector = selector
 
@@ -147,3 +147,13 @@ class KeyboardMoveCommand(WindowCommand):
 class KeyboardSizeCommand(WindowCommand):
     def _modification(self, selection):
         Wnck.Window.keyboard_size(selection)
+
+
+class MoveCommand:
+    def __init__(self, expression, selector, obj):
+        self.expression = expression
+        self.selector = selector
+        self.obj = obj
+
+    def run(self):
+        self.selector.moveTo(self.obj)
