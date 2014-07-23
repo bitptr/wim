@@ -1,0 +1,104 @@
+grammar: (SAO | other) C*
+
+selectors (S):
++-------+-----------------------------------------+
+| gS    | run S on all workspaces                 |
+| <P>   | apply P in the context of windows       |
+| [P]   | apply P in the context of workspaces    |
+| {P}   | apply P in the context of applications  |
+| %     | the current window                      |
+| #     | the prior window                        |
++-------+-----------------------------------------+
+
+predicates (P):
++----+-----------------+
+| #X | XID=X           |
+| .X | WM_CLASS=X      |
+| @X | WM_NAME=X       |
+| &X | PID=X           |
+| ?X | window type = X |
+| X  | select offset X |
++----+-----------------+
+
+X may be a string (no quotes), number, or regexp (/ ... /).
+
+actions (A):
++----+--------------------------+
+|    | activate                 |
+| s  | shade                    |
+| vM | vertical maximize        |
+| uV | vertical unmaximize      |
+| hM | horizontal maximize      |
+| uH | horizontal unmaximize    |
+| m  | move                     |
+| tS | toggle shade             |
+| j  | jump                     |
+| M  | maximize                 |
+| uM | unmaximize               |
+| x  | close                    |
+| p  | pin                      |
+| uP | unpin                    |
+| S  | stick                    |
+| uS | unstick                  |
+| kP | skip pager               |
+| kT | skip tasklist            |
+| f  | full screen              |
+| n  | minimize                 |
+| uN | unminimize               |
+| a  | make above               |
+| uA | unmake above             |
+| b  | make below               |
+| uB | unmake below             |
+| yM | keyboard move            |
+| yS | keyboard size            |
+| r  | rename                   |
+| wC | set the workspace count  |
+| wL | set the workspace layout |
++----+--------------------------+
+
+objects (O):
+
+may be preceded by a number
+
++---+--------+
+| r | right  |
+| l | left   |
+| u | up     |
+| d | down   |
+| n | north  |
+| s | south  |
+| e | east   |
+| w | west   |
+| p | pixel  |
++---+--------+
+
+other:
+
++---------+----------------+
+| windows | list windows   |
+| desktop | toggle desktop |
++---------+----------------+
+
+comments (C):
+
+Double quote to end of line
+
+
+EXAMPLES:
+
+:<#25>s " shade window with XID 25, on current workspace
+:<.mate-terminal @/~/>vM " vertical maximize all WM_CLASS=mate-terminal with WM_NAME matching regexp /~/, on current workspace
+:g<.mate-terminal>m[@Terminals] " move all WM_CLASS=mate-terminal on any workspace to the worspace named "Terminals"
+:%tS " toggle shading on the current window
+:# " activate the prior window
+:%m[2] " move the current window to the 3rd workspace
+:[8]j " jump to the 9th workspace
+:windows " show the list of all windows, sorted by stack
+:desktop
+:[] " produce the current workspace
+:<> " produce all windows on current workspace
+:% " produce the current window
+:[]mr " move to the workspace to the right
+:[1]m3r " move to the workspace 3 to the right of the 2nd workspace
+:{&1234}M " maximize all windows that are part of the application with PID 1234, on current workspace
+:<?normal,?dialog,?toolbar,?utility>x " close all windows on the current workspace that are of type normal, dialog, toolbar, or utility
