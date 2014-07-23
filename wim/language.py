@@ -30,11 +30,8 @@ from .command import (UnknownCommand,
                       KeyboardMoveCommand,
                       KeyboardSizeCommand,
                       MoveCommand)
-from .selector import (UnknownSelector,
-                       CurrentWindowSelector,
-                       WindowPredicateSelector,
-                       PriorWindowSelector)
-from .direction import *
+from .selector import Selector
+from .direction import Direction
 
 
 number = OneOrMore(Word(nums))
@@ -121,34 +118,6 @@ parser = Or([
     other
 ]) + StringEnd()
 parser.ignore(comment)
-
-
-class Selector(object):
-    def __new__(klass, selector_expr, expression, model):
-        if selector_expr == '%':
-            return CurrentWindowSelector(selector_expr, expression, model)
-        elif selector_expr == '#':
-            return PriorWindowSelector(selector_expr, expression, model)
-        elif selector_expr == '<':
-            return WindowPredicateSelector(selector_expr, expression, model)
-        else:
-            return UnknownSelector(selector_expr, expression, model)
-
-
-class Direction(object):
-    def __new__(klass, direction_expr, expression, model):
-        count = 1
-        if 'count' in expression:
-            count = int(''.join(expression['count']))
-
-        logical = {
-            'r': RightDirection
-        }
-
-        if 'logical' in expression:
-            return logical[expression['logical']](model, count)
-        else:
-            return Selector(direction_expr, expression, model)
 
 
 def Runner(expression, model):

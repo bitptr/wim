@@ -12,6 +12,18 @@ from .predicate import (XidPredicate,
                         UnknownPredicate)
 
 
+class Selector(object):
+    def __new__(klass, selector_expr, expression, model):
+        if selector_expr == '%':
+            return CurrentWindowSelector(selector_expr, expression, model)
+        elif selector_expr == '#':
+            return PriorWindowSelector(selector_expr, expression, model)
+        elif selector_expr == '<':
+            return WindowPredicateSelector(selector_expr, expression, model)
+        else:
+            return UnknownSelector(selector_expr, expression, model)
+
+
 class UnknownSelector(object):
     def __init__(self, selector_expr, expr, model):
         self.selector_expr = selector_expr
