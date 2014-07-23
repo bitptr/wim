@@ -1,0 +1,49 @@
+Commands to Implement:
+- j
+- r
+- wC
+- wL
+- blank (activate)
+
+Selector need to respond to moveTo:
+- UnknownSelector
+- WindowPredicateSelector 
+
+Selectors need to respond to move:
+- UnknownSelector
+- CurrentWindowSelector
+- PriorWindowSelector
+- WindowPredicateSelector
+
+Selectors are missing:
+- ApplicationSelector {}
+- WorkspaceSelector []
+- g
+
+Predicates:
+- Strings may have quotes
+- Regex
+
+Directions are missing:
+- up
+- down
+- north
+- south
+- east
+- west
+
+Tests:
+- Move all Wnck into models.py
+- Then all commands can be unit tested without Wnck
+- Maybe crazy integration tests
+
+Bugs:
+- Wim should not crash on unhandled exceptions
+
+Refactoring:
+- PEP8
+- Rename Factories as such
+- Remove Runner from language.py
+- Rename runner.py
+- Rename Model
+- Break Model into a state holder and state changer

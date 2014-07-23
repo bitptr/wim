@@ -22,7 +22,7 @@ predicates (P):
 
 X may be a string (no quotes), number, or regexp (/ ... /).
 
-actions (A):
+commands/actions (A):
 +----+--------------------------+
 |    | activate                 |
 | s  | shade                    |
@@ -56,7 +56,7 @@ actions (A):
 | wL | set the workspace layout |
 +----+--------------------------+
 
-objects (O):
+objects/directions (O):
 
 may be preceded by a number
 
@@ -69,7 +69,6 @@ may be preceded by a number
 | s | south  |
 | e | east   |
 | w | west   |
-| p | pixel  |
 +---+--------+
 
 other:
