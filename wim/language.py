@@ -4,35 +4,6 @@ from pyparsing import oneOf, StringEnd, Literal, Forward
 from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex
 from pyparsing import Optional, Or, White, Word, OneOrMore
 
-from .command import (UnknownCommand,
-                      ShadeCommand,
-                      MaximizeVerticalCommand,
-                      UnmaximizeVerticalCommand,
-                      MaximizeHorizontalCommand,
-                      UnmaximizeHorizontalCommand,
-                      MaximizeCommand,
-                      UnmaximizeCommand,
-                      ToggleShadeCommand,
-                      CloseCommand,
-                      PinCommand,
-                      UnpinCommand,
-                      StickCommand,
-                      UnstickCommand,
-                      SkipPagerCommand,
-                      SkipTasklistCommand,
-                      FullscreenCommand,
-                      MinimizeCommand,
-                      UnminimizeCommand,
-                      AboveCommand,
-                      UnaboveCommand,
-                      BelowCommand,
-                      UnbelowCommand,
-                      KeyboardMoveCommand,
-                      KeyboardSizeCommand,
-                      MoveCommand)
-from .selector import Selector
-from .direction import Direction
-
 
 number = OneOrMore(Word(nums))
 string = OneOrMore(Word(alphas + '~-/'))
@@ -118,41 +89,3 @@ parser = Or([
     other
 ]) + StringEnd()
 parser.ignore(comment)
-
-
-def Runner(expression, model):
-    mappings = {
-        's': ShadeCommand,
-        'vM': MaximizeVerticalCommand,
-        'uV': UnmaximizeVerticalCommand,
-        'hM': MaximizeHorizontalCommand,
-        'uH': UnmaximizeHorizontalCommand,
-        'm': MoveCommand,
-        'tS': ToggleShadeCommand,
-        'j': UnknownCommand,
-        'M': MaximizeCommand,
-        'uM': UnmaximizeCommand,
-        'x': CloseCommand,
-        'p': PinCommand,
-        'uP': UnpinCommand,
-        'S': StickCommand,
-        'uS': UnstickCommand,
-        'kP': SkipPagerCommand,
-        'kT': SkipTasklistCommand,
-        'f': FullscreenCommand,
-        'n': MinimizeCommand,
-        'uN': UnminimizeCommand,
-        'a': AboveCommand,
-        'uA': UnaboveCommand,
-        'b': BelowCommand,
-        'uB': UnbelowCommand,
-        'yM': KeyboardMoveCommand,
-        'yS': KeyboardSizeCommand,
-        'r': UnknownCommand,
-        'wC': UnknownCommand,
-        'wL': UnknownCommand,
-    }
-    selector = Selector(expression['selector'], expression, model)
-    command = mappings.get(expression['action'], UnknownCommand)
-    direction = Direction(expression['direction'], expression, model)
-    return command(expression, selector, direction)

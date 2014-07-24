@@ -2,7 +2,7 @@ import readline
 from gi.repository import Gdk, GObject
 import sys
 import thread
-from .runner import InteractiveWim
+from .interact import InteractiveWim
 from .model import Model
 
 

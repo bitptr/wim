@@ -1,31 +1,10 @@
-import cmd
-from .language import parser, Runner
-from pyparsing import ParseException
+from .selector import SelectorFactory
+from .command import CommandFactory
+from .object_factory import ObjectFactory
 
 
-class InteractiveWim(cmd.Cmd):
-    prompt = ':'
-    use_rawinput = True
-
-    def onEOF(self, f):
-        self.onEOF = f
-
-    def setModel(self, m):
-        self.model = m
-
-    def do_EOF(self, _line):
-        print
-        if self.onEOF is not None:
-            self.onEOF()
-        return True
-
-    def default(self, line):
-        command = self._parse(line)
-        runner = Runner(command, self.model)
-        return runner.run()
-
-    def _parse(self, line):
-        try:
-            return parser.parseString(line)
-        except ParseException:
-            return '?'
+def Runner(expression, model):
+    selector = SelectorFactory(expression['selector'], expression, model)
+    command = CommandFactory(expression['action'])
+    obj = ObjectFactory(expression['direction'], expression, model)
+    return command(expression, selector, obj)

@@ -12,7 +12,7 @@ from .predicate import (XidPredicate,
                         UnknownPredicate)
 
 
-class Selector(object):
+class SelectorFactory(object):
     def __new__(klass, selector_expr, expression, model):
         if selector_expr == '%':
             return CurrentWindowSelector(selector_expr, expression, model)

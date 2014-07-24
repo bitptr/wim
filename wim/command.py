@@ -157,3 +157,40 @@ class MoveCommand:
 
     def run(self):
         self.selector.moveTo(self.obj)
+
+
+class CommandFactory(object):
+
+    def __new__(klass, action_expression):
+        mappings = {
+            's': ShadeCommand,
+            'vM': MaximizeVerticalCommand,
+            'uV': UnmaximizeVerticalCommand,
+            'hM': MaximizeHorizontalCommand,
+            'uH': UnmaximizeHorizontalCommand,
+            'm': MoveCommand,
+            'tS': ToggleShadeCommand,
+            'j': UnknownCommand,
+            'M': MaximizeCommand,
+            'uM': UnmaximizeCommand,
+            'x': CloseCommand,
+            'p': PinCommand,
+            'uP': UnpinCommand,
+            'S': StickCommand,
+            'uS': UnstickCommand,
+            'kP': SkipPagerCommand,
+            'kT': SkipTasklistCommand,
+            'f': FullscreenCommand,
+            'n': MinimizeCommand,
+            'uN': UnminimizeCommand,
+            'a': AboveCommand,
+            'uA': UnaboveCommand,
+            'b': BelowCommand,
+            'uB': UnbelowCommand,
+            'yM': KeyboardMoveCommand,
+            'yS': KeyboardSizeCommand,
+            'r': UnknownCommand,
+            'wC': UnknownCommand,
+            'wL': UnknownCommand,
+        }
+        return mappings.get(action_expression, UnknownCommand)
