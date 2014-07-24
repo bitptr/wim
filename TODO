@@ -42,8 +42,5 @@ Bugs:
 
 Refactoring:
 - PEP8
-- Rename Factories as such
-- Remove Runner from language.py
-- Rename runner.py
 - Rename Model
 - Break Model into a state holder and state changer
