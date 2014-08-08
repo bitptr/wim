@@ -31,6 +31,7 @@ Tests:
 
 Bugs:
 - Wim should not crash on unhandled exceptions
+- Comments don't work unless they are accompanied by a command
 
 Refactoring:
 - PEP8

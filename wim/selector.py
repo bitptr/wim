@@ -20,8 +20,18 @@ class SelectorFactory(object):
             return PriorWindowSelector(selector_expr, expression, model)
         elif selector_expr == '<':
             return WindowPredicateSelector(selector_expr, expression, model)
+        elif selector_expr is None:
+            return NullSelector(selector_expr, expression, model)
         else:
             return UnknownSelector(selector_expr, expression, model)
+
+
+class NullSelector(object):
+    def __init__(self, selector_expr, expr, model):
+        pass
+
+    def runWindow(self, modification):
+        pass
 
 
 class UnknownSelector(object):

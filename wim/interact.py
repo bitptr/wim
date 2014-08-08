@@ -30,4 +30,4 @@ class InteractiveWim(cmd.Cmd):
         try:
             return parser.parseString(line)
         except ParseException:
-            return '?'
+            return {}

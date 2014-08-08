@@ -11,8 +11,16 @@ class UnknownCommand:
         self.expression = expression
 
     def run(self):
-        command = self.expression['action']
+        command = self.expression.get('action')
         print("Unknown command: %s" % command, file=sys.stderr)
+
+
+class NullCommand:
+    def __init__(self, expression, selector, obj):
+        pass
+
+    def run(self):
+        pass
 
 
 class WindowCommand:
@@ -192,5 +200,6 @@ class CommandFactory(object):
             'r': UnknownCommand,
             'wC': UnknownCommand,
             'wL': UnknownCommand,
+            None: NullCommand,
         }
         return mappings.get(action_expression, UnknownCommand)
