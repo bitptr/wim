@@ -20,7 +20,9 @@ class ObjectFactory(object):
             's': DownDirection,
         }
 
+        selector_expr = direction_expr[0]
+
         if 'logical' in expression:
             return logical[expression['logical']](model, count)
         else:
-            return SelectorFactory(direction_expr, expression, model)
+            return SelectorFactory(selector_expr, expression, model)
