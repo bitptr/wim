@@ -29,5 +29,6 @@ class InteractiveWim(cmd.Cmd):
     def _parse(self, line):
         try:
             return parser.parseString(line)
-        except ParseException:
+        except ParseException, e:
+            print "ParseException:", e
             return {}
