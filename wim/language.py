@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from pyparsing import oneOf, StringEnd, Literal, Forward
+from pyparsing import oneOf, StringEnd, Literal, Forward, Suppress
 from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex
 from pyparsing import Optional, Or, White, Word, OneOrMore, CharsNotIn
 
@@ -31,7 +31,7 @@ predicates << Or([
     and_predicate
 ])
 
-comment = Regex('".*')
+comment = Regex('".*')('comment')
 
 other = Or([Keyword('windows'), Keyword('desktop')])
 
@@ -85,7 +85,7 @@ selector << Or([
 ])
 
 parser = Or([
+    Suppress(ZeroOrMore(White())),
     selector('selector') + command('command') + direction('direction'),
-    other
-]) + StringEnd()
-parser.ignore(comment)
+    other,
+]) + ZeroOrMore(comment) + StringEnd()
