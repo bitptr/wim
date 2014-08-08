@@ -2,12 +2,12 @@ from __future__ import print_function
 
 from pyparsing import oneOf, StringEnd, Literal, Forward
 from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex
-from pyparsing import Optional, Or, White, Word, OneOrMore
+from pyparsing import Optional, Or, White, Word, OneOrMore, CharsNotIn
 
 
 number = OneOrMore(Word(nums))
 string = OneOrMore(Word(alphas + '~-/'))
-regexp = Literal('/') + Word(alphas + '~-') + Literal('/')
+regexp = Literal('/') + CharsNotIn('/') + Literal('/')
 x = (regexp | string | number)('identifier')
 
 predicate = Or([
