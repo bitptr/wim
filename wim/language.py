@@ -7,8 +7,8 @@ from pyparsing import Optional, Or, White, Word, OneOrMore
 
 number = OneOrMore(Word(nums))
 string = OneOrMore(Word(alphas + '~-/'))
-regexp = Literal('/') + string + Literal('/')
-x = Or([string, number, regexp])('identifier')
+regexp = Literal('/') + Word(alphas + '~-') + Literal('/')
+x = (regexp | string | number)('identifier')
 
 predicate = Or([
     Literal('#') + x,
