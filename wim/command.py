@@ -157,6 +157,12 @@ class KeyboardSizeCommand(WindowCommand):
         Wnck.Window.keyboard_size(selection)
 
 
+class ActivateCommand(WindowCommand):
+    def _modification(self, selection):
+        now = calendar.timegm(datetime.datetime.utcnow().timetuple())
+        Wnck.Window.activate(selection, now)
+
+
 class MoveCommand:
     def __init__(self, expression, selector, obj):
         self.expression = expression
@@ -200,6 +206,7 @@ class CommandFactory(object):
             'r': UnknownCommand,
             'wC': UnknownCommand,
             'wL': UnknownCommand,
-            None: NullCommand,
+            '[]': ActivateCommand,
+            'None': NullCommand,
         }
-        return mappings.get(command_expression, UnknownCommand)
+        return mappings.get(str(command_expression), UnknownCommand)

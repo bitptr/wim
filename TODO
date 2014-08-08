@@ -3,7 +3,6 @@ Commands to Implement:
 - r
 - wC
 - wL
-- blank (activate)
 
 Selector need to respond to moveTo:
 - WindowPredicateSelector

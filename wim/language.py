@@ -42,38 +42,36 @@ direction = ZeroOrMore(oneOf(list(nums)))('count') + Optional(Or([
     selector
 ]))
 
-command = Or([
-    Literal('s'),
-    Literal('vM'),
-    Literal('uV'),
-    Literal('hM'),
-    Literal('uH'),
-    Literal('m'),
-    Literal('tS'),
-    Literal('j'),
-    Literal('M'),
-    Literal('uM'),
-    Literal('x'),
-    Literal('p'),
-    Literal('uP'),
-    Literal('S'),
-    Literal('uS'),
-    Literal('kP'),
-    Literal('kT'),
-    Literal('f'),
-    Literal('n'),
-    Literal('uN'),
-    Literal('a'),
-    Literal('uA'),
-    Literal('b'),
-    Literal('uB'),
-    Literal('yM'),
-    Literal('yS'),
-    Literal('r'),
-    Literal('wC'),
-    Literal('wL'),
-    empty
-])
+command = (Literal('s')
+           | Literal('vM')
+           | Literal('uV')
+           | Literal('hM')
+           | Literal('uH')
+           | Literal('m')
+           | Literal('tS')
+           | Literal('j')
+           | Literal('M')
+           | Literal('uM')
+           | Literal('x')
+           | Literal('p')
+           | Literal('uP')
+           | Literal('S')
+           | Literal('uS')
+           | Literal('kP')
+           | Literal('kT')
+           | Literal('f')
+           | Literal('n')
+           | Literal('uN')
+           | Literal('a')
+           | Literal('uA')
+           | Literal('b')
+           | Literal('uB')
+           | Literal('yM')
+           | Literal('yS')
+           | Literal('r')
+           | Literal('wC')
+           | Literal('wL')
+           | empty)
 
 selector << Or([
     (Literal('g') + selector)('global'),
