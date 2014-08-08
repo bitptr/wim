@@ -7,13 +7,6 @@ Commands to Implement:
 Selector need to respond to moveTo:
 - WindowPredicateSelector
 
-???? What is move? Why does it need to exist outside of moveTo
-Selectors need to respond to move:
-- UnknownSelector
-- CurrentWindowSelector
-- PriorWindowSelector
-- WindowPredicateSelector
-
 Selectors are missing:
 - ApplicationSelector {}
 - WorkspaceSelector []

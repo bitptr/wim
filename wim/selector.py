@@ -44,6 +44,9 @@ class UnknownSelector(object):
     def moveTo(self, direction):
         self._print_error()
 
+    def move(self, window):
+        self._print_error()
+
     def _print_error(self):
         print("Unknown selector: %s" % self.selector_expr, file=sys.stderr)
 
@@ -58,6 +61,9 @@ class CurrentWindowSelector(object):
 
     def moveTo(self, direction):
         direction.move(self._window())
+
+    def move(self, window):
+        print("Cannot move onto the current window")
 
     def _window(self):
         return self.model.active_window
@@ -74,6 +80,9 @@ class PriorWindowSelector(object):
     def moveTo(self, direction):
         direction.move(self._window())
 
+    def move(self, window):
+        print("Cannot move onto the prior window")
+
     def _window(self):
         return self.model.prior_window
 
@@ -87,6 +96,9 @@ class WindowPredicateSelector(object):
     def runWindow(self, modification):
         for window in self._windows():
             modification(window)
+
+    def move(self, window):
+        print("Cannot move onto a window predicate")
 
     def _windows(self):
         windows = self._predicate().windows()
