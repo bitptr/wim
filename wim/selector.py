@@ -39,6 +39,12 @@ class UnknownSelector(object):
         self.selector_expr = selector_expr
 
     def runWindow(self, modification):
+        self._print_error()
+
+    def moveTo(self, direction):
+        self._print_error()
+
+    def _print_error(self):
         print("Unknown selector: %s" % self.selector_expr, file=sys.stderr)
 
 
