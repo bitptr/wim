@@ -24,14 +24,6 @@ Predicates:
 - Strings may have quotes
 - Regex
 
-Directions are missing:
-- up
-- down
-- north
-- south
-- east
-- west
-
 Tests:
 - Move all Wnck into models.py
 - Then all commands can be unit tested without Wnck

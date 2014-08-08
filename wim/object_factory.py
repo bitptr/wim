@@ -1,4 +1,5 @@
-from .direction import RightDirection, LeftDirection
+from .direction import (RightDirection, LeftDirection,
+                        DownDirection, UpDirection)
 from .selector import SelectorFactory
 
 
@@ -10,7 +11,13 @@ class ObjectFactory(object):
 
         logical = {
             'r': RightDirection,
-            'l': LeftDirection
+            'l': LeftDirection,
+            'u': UpDirection,
+            'd': DownDirection,
+            'e': RightDirection,
+            'w': LeftDirection,
+            'n': UpDirection,
+            's': DownDirection,
         }
 
         if 'logical' in expression:
