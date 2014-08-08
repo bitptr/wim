@@ -11,7 +11,7 @@ class UnknownCommand:
         self.expression = expression
 
     def run(self):
-        command = self.expression.get('action')
+        command = self.expression.get('command')
         print("Unknown command: %s" % command, file=sys.stderr)
 
 
@@ -169,7 +169,7 @@ class MoveCommand:
 
 class CommandFactory(object):
 
-    def __new__(klass, action_expression):
+    def __new__(klass, command_expression):
         mappings = {
             's': ShadeCommand,
             'vM': MaximizeVerticalCommand,
@@ -202,4 +202,4 @@ class CommandFactory(object):
             'wL': UnknownCommand,
             None: NullCommand,
         }
-        return mappings.get(action_expression, UnknownCommand)
+        return mappings.get(command_expression, UnknownCommand)

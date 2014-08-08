@@ -6,9 +6,9 @@ Commands to Implement:
 - blank (activate)
 
 Selector need to respond to moveTo:
-- UnknownSelector
-- WindowPredicateSelector 
+- WindowPredicateSelector
 
+???? What is move? Why does it need to exist outside of moveTo
 Selectors need to respond to move:
 - UnknownSelector
 - CurrentWindowSelector

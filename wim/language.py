@@ -42,7 +42,7 @@ direction = ZeroOrMore(oneOf(list(nums)))('count') + Optional(Or([
     selector
 ]))
 
-action = Or([
+command = Or([
     Literal('s'),
     Literal('vM'),
     Literal('uV'),
@@ -85,7 +85,7 @@ selector << Or([
 ])
 
 parser = Or([
-    selector('selector') + action('action') + direction('direction'),
+    selector('selector') + command('command') + direction('direction'),
     other
 ]) + StringEnd()
 parser.ignore(comment)
