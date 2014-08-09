@@ -23,9 +23,12 @@ Tests:
 
 Bugs:
 - Wim should not crash on unhandled exceptions
-- Comments don't work unless they are accompanied by a command
 
 Refactoring:
 - PEP8
 - Rename Model
 - Break Model into a state holder and state changer
+
+Documentation:
+- Man page
+- Fancy Web site
