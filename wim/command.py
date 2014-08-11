@@ -163,7 +163,7 @@ class ActivateCommand(WindowCommand):
         Wnck.Window.activate(selection, now)
 
 
-class MoveCommand:
+class MoveCommand(object):
     def __init__(self, expression, selector, obj):
         self.expression = expression
         self.selector = selector

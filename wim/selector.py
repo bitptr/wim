@@ -2,13 +2,15 @@ from __future__ import print_function
 
 import sys
 
-from .predicate import (XidPredicate,
-                        ClassPredicate,
-                        NamePredicate,
-                        PidPredicate,
-                        TypePredicate,
-                        OffsetPredicate,
+from .predicate import (XidWindowsPredicate,
+                        ClassWindowsPredicate,
+                        NameWindowsPredicate,
+                        PidWindowsPredicate,
+                        TypeWindowsPredicate,
+                        OffsetWindowsPredicate,
                         AllWindowsPredicate,
+                        CurrentWorkspacePredicate,
+                        NumberWorkspaceSelector,
                         UnknownPredicate)
 
 
@@ -20,6 +22,8 @@ class SelectorFactory(object):
             return PriorWindowSelector(selector_expr, expression, model)
         elif selector_expr == '<':
             return WindowPredicateSelector(selector_expr, expression, model)
+        elif selector_expr == '[':
+            return WorkspacePredicateSelector(selector_expr, expression, model)
         elif selector_expr is None:
             return NullSelector(selector_expr, expression, model)
         else:
@@ -59,8 +63,8 @@ class CurrentWindowSelector(object):
     def runWindow(self, modification):
         modification(self._window())
 
-    def moveTo(self, direction):
-        direction.move(self._window())
+    def moveTo(self, obj):
+        obj.move(self._window())
 
     def move(self, window):
         print("Cannot move onto the current window")
@@ -77,8 +81,8 @@ class PriorWindowSelector(object):
     def runWindow(self, modification):
         modification(self._window())
 
-    def moveTo(self, direction):
-        direction.move(self._window())
+    def moveTo(self, obj):
+        obj.move(self._window())
 
     def move(self, window):
         print("Cannot move onto the prior window")
@@ -113,20 +117,46 @@ class WindowPredicateSelector(object):
         if len(self.predicate_expr) == 0:
             return AllWindowsPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '#':
-            return XidPredicate(self.predicate_expr, self.model)
+            return XidWindowsPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '.':
-            return ClassPredicate(self.predicate_expr, self.model)
+            return ClassWindowsPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '@':
-            return NamePredicate(self.predicate_expr, self.model)
+            return NameWindowsPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '&':
-            return PidPredicate(self.predicate_expr, self.model)
+            return PidWindowsPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0] == '?':
-            return TypePredicate(self.predicate_expr, self.model)
+            return TypeWindowsPredicate(self.predicate_expr, self.model)
         elif self.predicate_expr[0].isdigit():
-            return OffsetPredicate(self.predicate_expr, self.model)
+            return OffsetWindowsPredicate(self.predicate_expr, self.model)
         else:
             return UnknownPredicate(self.predicate_expr, self.model)
 
     @property
     def predicate_expr(self):
         return self.expression['window'][1:-1]
+
+
+class WorkspacePredicateSelector(object):
+
+    def __init__(self, selector_expr, expression, model):
+        self.selector_expr = selector_expr
+        self.expression = expression
+        self.model = model
+
+    def _workspace(self):
+        return self._predicate().workspace()
+
+    def _predicate(self):
+        if len(self.predicate_expr) == 0:
+            return CurrentWorkspacePredicate(self.predicate_expr, self.model)
+        elif self.predicate_expr[0].isdigit():
+            return NumberWorkspaceSelector(self.predicate_expr, self.model)
+        else:
+            return UnknownPredicate(self.predicate_expr, self.model)
+
+    def move(self, window):
+        self.model.move_window_to_workspace(window, self._workspace())
+
+    @property
+    def predicate_expr(self):
+        return self.expression['workspace'][1:-1]

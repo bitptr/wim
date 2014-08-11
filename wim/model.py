@@ -60,12 +60,18 @@ class Model(object):
         else:
             return Wnck.Window.get_geometry(window)
 
-    def move_window(self, window, x, y, w, h):
+    def move_window_to_coordinates(self, window, x, y, w, h):
         Wnck.Window.set_geometry(
             window,
             Wnck.WindowGravity.STATIC,
             Wnck.WindowMoveResizeMask.X | Wnck.WindowMoveResizeMask.Y,
             x, y, w, h)
+
+    def move_window_to_workspace(self, window, workspace):
+        Wnck.Window.move_to_workspace(window, workspace)
+
+    def workspace_number(self, number):
+        return Wnck.Screen.get_workspace(self.screen, number)
 
     def _add_window(self, screen, window):
         workspace = Wnck.Window.get_workspace(window)

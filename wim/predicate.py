@@ -6,7 +6,7 @@ import sys
 from .util import maybe, singleton
 
 
-class XidPredicate(object):
+class XidWindowsPredicate(object):
     def __init__(self, predicate_expr, model):
         self.predicate_expr = predicate_expr
 
@@ -18,7 +18,7 @@ class XidPredicate(object):
         return int(self.predicate_expr[-1])
 
 
-class ClassPredicate(object):
+class ClassWindowsPredicate(object):
     def __init__(self, predicate_expr, model):
         self.predicate_expr = predicate_expr
 
@@ -49,19 +49,19 @@ class AllWindowsFilter(object):
         return self._matcher(window)
 
 
-class NamePredicate(AllWindowsFilter):
+class NameWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
         name = Wnck.Window.get_name(window)
         return (name == self.predicate)
 
 
-class PidPredicate(AllWindowsFilter):
+class PidWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
         pid = Wnck.Window.get_pid(window)
         return (pid == int(self.predicate))
 
 
-class TypePredicate(AllWindowsFilter):
+class TypeWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
         win_type = Wnck.Window.get_window_type(window)
         return (win_type == self._win_type(self.predicate))
@@ -80,9 +80,9 @@ class TypePredicate(AllWindowsFilter):
         return types[human]
 
 
-class OffsetPredicate(AllWindowsFilter):
+class OffsetWindowsPredicate(AllWindowsFilter):
     def __init__(self, predicate_expr, model):
-        super(OffsetPredicate, self).__init__(predicate_expr, model)
+        super(OffsetWindowsPredicate, self).__init__(predicate_expr, model)
         self.count = -1
 
     def _matcher(self, window):
@@ -100,5 +100,30 @@ class UnknownPredicate(object):
         self.predicate_expr = predicate_expr
 
     def windows(self):
-        print("Unknown predicate: %s" % self.predicate_expr, file=sys.stderr)
+        self._print_error()
         return []
+
+    def workspace(self):
+        self._print_error()
+        return None
+
+    def _print_error(self):
+        print("Unknown predicate: %s" % self.predicate_expr, file=sys.stderr)
+
+
+class CurrentWorkspacePredicate(object):
+    def __init__(self, predicate_expr, model):
+        self.predicate_expr = predicate_expr
+        self.model = model
+
+    def workspace(self):
+        return self.model.active_workspace
+
+
+class NumberWorkspaceSelector(object):
+    def __init__(self, predicate_expr, model):
+        self.predicate_expr = predicate_expr
+        self.model = model
+
+    def workspace(self):
+        return self.model.workspace_number(int(self.predicate_expr[0]))

@@ -5,7 +5,8 @@ class Direction(object):
 
     def move(self, window):
         (x, y, w, h) = self.model.geometry_for(window)
-        self.model.move_window(window, *self._coordinates(x, y, w, h))
+        self.model.move_window_to_coordinates(
+            window, *self._coordinates(x, y, w, h))
 
     def _coordinates(self, x, y, w, h):
         return (x, y, w, h)
