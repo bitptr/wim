@@ -7,7 +7,7 @@ Selector need to respond to moveTo:
 - WindowPredicateSelector
 
 Selectors are missing:
-- ApplicationSelector {}
+- ApplicationSelector {} (see branch application-selector)
 - g
 
 Workspaces:
@@ -27,7 +27,9 @@ Tests:
 - Maybe crazy integration tests
 
 Bugs:
-- Wim should not crash on unhandled exceptions
+- gs doesn't parse
+- <#0x160001d> doesn't parse
+- [#0x160001d] doesn't parse
 
 Refactoring:
 - PEP8
