@@ -74,10 +74,18 @@ If no predicate is passed, match all windows.
 .It Li [P]
 Select all workspaces matching the predicate
 .Va P .
+Item number is the only valid predicate for workspace predicate.
 See
 .Sx Predicates
 for more on predicates.
 If no predicate is passed, match the current workspace.
+.It Li {P}
+Select all windows in the application matching the predicate
+.Va P .
+Pid, Xid, and name are the only valid application predicates.
+See
+.Sx Predicates
+for more on predicates.
 .It Li %
 The current window.
 .It Li #

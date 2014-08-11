@@ -1,4 +1,6 @@
-from .util import maybe, singleton
+from gi.repository import Wnck
+
+from .util import maybe, singleton, str_to_xid
 from .exception import WimException
 
 
@@ -12,11 +14,7 @@ class XidWindowsPredicate(object):
 
     @property
     def predicate(self):
-        xid = self.predicate_expr[-1]
-        if xid[1] == 'x':
-            return int(xid, 16)
-        else:
-            return int(xid)
+        return str_to_xid(self.predicate_expr[-1])
 
 
 class ClassWindowsPredicate(object):
@@ -92,7 +90,7 @@ class AllWindowsPredicate(AllWindowsFilter):
         return True
 
 
-class UnknownPredicate(object):
+class InvalidPredicate(object):
     def __init__(self, predicate_expr, wnck_wrapper, is_global):
         self.predicate_expr = predicate_expr
 
@@ -105,7 +103,7 @@ class UnknownPredicate(object):
         return None
 
     def _raise_error(self):
-        raise WimException("Unknown predicate: %s" % self.predicate_expr)
+        raise WimException("Invalid predicate: %s" % self.predicate_expr)
 
 
 class CurrentWorkspacePredicate(object):
@@ -124,3 +122,53 @@ class NumberWorkspacePredicate(object):
 
     def workspace(self):
         return self.wnck_wrapper.workspace_number(int(self.predicate_expr[0]))
+
+
+class ApplicationPredicate(object):
+    def __init__(self, predicate_expr, wnck_wrapper, is_global):
+        self.predicate_expr = predicate_expr
+        self.wnck_wrapper = wnck_wrapper
+        self.is_global = is_global
+
+    def windows(self):
+        return filter(self._match, self._workspace())
+
+    def _workspace(self):
+        if self.is_global:
+            return self.wnck_wrapper.all_windows()
+        else:
+            return self.wnck_wrapper.active_workspace_windows()
+
+    def _match(self, window):
+        application = Wnck.Window.get_application(window)
+        if application:
+            return self._property(application) == self.predicate
+        else:
+            return False
+
+
+class XidApplicationPredicate(ApplicationPredicate):
+    def _property(self, application):
+        return Wnck.Application.get_xid(application)
+
+    @property
+    def predicate(self):
+        return str_to_xid(self.predicate_expr[-1])
+
+
+class NameApplicationPredicate(ApplicationPredicate):
+    def _property(self, application):
+        return Wnck.Application.get_name(application)
+
+    @property
+    def predicate(self):
+        return self.predicate_expr[-1]
+
+
+class PidApplicationPredicate(ApplicationPredicate):
+    def _property(self, application):
+        return Wnck.Application.get_pid(application)
+
+    @property
+    def predicate(self):
+        return int(self.predicate_expr[-1])

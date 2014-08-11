@@ -38,6 +38,7 @@ class WnckState(object):
             self._avoid_xid = self._avoid.get_window().get_xid()
 
         active_window = Wnck.Screen.get_active_window(screen)
+        active_window_xid = None
         if active_window:
             active_window_xid = Wnck.Window.get_xid(active_window)
 

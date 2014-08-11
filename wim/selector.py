@@ -1,5 +1,8 @@
 from .util import drop_while
 from .predicate import (XidWindowsPredicate,
+                        XidApplicationPredicate,
+                        NameApplicationPredicate,
+                        PidApplicationPredicate,
                         ClassWindowsPredicate,
                         NameWindowsPredicate,
                         PidWindowsPredicate,
@@ -8,7 +11,7 @@ from .predicate import (XidWindowsPredicate,
                         AllWindowsPredicate,
                         CurrentWorkspacePredicate,
                         NumberWorkspacePredicate,
-                        UnknownPredicate)
+                        InvalidPredicate)
 from .exception import WimException
 
 
@@ -19,6 +22,7 @@ class SelectorFactory(object):
                      '#': PriorWindowSelector,
                      'g': GlobalSelector,
                      '<': WindowPredicateSelector,
+                     '{': ApplicationPredicateSelector,
                      '[': WorkspacePredicateSelector}
         klass = selectors.get(selector_expr, UnknownSelector)
         return klass(selector_expr, expression, model, is_global)
@@ -43,6 +47,9 @@ class UnknownSelector(object):
         self._raise_error()
 
     def move(self, window):
+        self._raise_error()
+
+    def activate(self):
         self._raise_error()
 
     def _raise_error(self):
@@ -103,9 +110,10 @@ class PriorWindowSelector(object):
         return self.model.prior_window
 
 
-class WindowPredicateSelector(object):
-    def __init__(self, selector_expr, expression, model,
-                 is_global):
+class WindowsPredicateSelector(object):
+    """A selector that runs a command on multiple windows"""
+
+    def __init__(self, selector_expr, expression, model, is_global):
         self.selector_expr = selector_expr
         self.expression = expression
         self.model = model
@@ -128,6 +136,8 @@ class WindowPredicateSelector(object):
     def _windows(self):
         return self._predicate().windows()
 
+
+class WindowPredicateSelector(WindowsPredicateSelector):
     def _predicate(self):
         def predicate_klass():
             if len(self.predicate_expr) == 0:
@@ -141,7 +151,7 @@ class WindowPredicateSelector(object):
                               '&': PidWindowsPredicate,
                               '?': TypeWindowsPredicate}
                 return predicates.get(self.predicate_expr[0],
-                                      UnknownPredicate)
+                                      InvalidPredicate)
 
         return predicate_klass()(self.predicate_expr,
                                  self.model,
@@ -150,6 +160,24 @@ class WindowPredicateSelector(object):
     @property
     def predicate_expr(self):
         return self.expression['window'][1:-1]
+
+
+class ApplicationPredicateSelector(WindowsPredicateSelector):
+    def _predicate(self):
+        def predicate_klass():
+            predicates = {'#': XidApplicationPredicate,
+                          '@': NameApplicationPredicate,
+                          '&': PidApplicationPredicate}
+            return predicates.get(self.predicate_expr[0],
+                                  InvalidPredicate)
+
+        return predicate_klass()(self.predicate_expr,
+                                 self.model,
+                                 self.is_global)
+
+    @property
+    def predicate_expr(self):
+        return self.expression['application'][1:-1]
 
 
 class WorkspacePredicateSelector(object):
@@ -172,7 +200,7 @@ class WorkspacePredicateSelector(object):
             elif self.predicate_expr[0].isdigit():
                 return NumberWorkspacePredicate
             else:
-                return UnknownPredicate
+                return InvalidPredicate
         return predicate_klass()(self.predicate_expr,
                                  self.model,
                                  self.is_global)

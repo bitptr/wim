@@ -33,7 +33,9 @@ Style Guide
 - Imports should be divide into 3 sections with a line break in between:
 1) Python imports
 2) Third Party library imports
-3) Local imports (always proceded by a .)
+3) Local imports (always proceded by a . or ..)
+
+- No space should be left btw class declarions and the first method
 
 
 Resources

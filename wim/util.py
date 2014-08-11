@@ -16,3 +16,10 @@ def drop_while(l, p):
         return drop_while(l[1:], p)
     else:
         return l
+
+
+def str_to_xid(string):
+    if string[1] == 'x':
+        return int(string, 16)
+    else:
+        return int(string)

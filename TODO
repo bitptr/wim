@@ -4,7 +4,6 @@ Commands to Implement:
 - wL
 
 Selectors are missing:
-- ApplicationSelector {} (see branch application-selector)
 - Regex selector
 
 Workspaces:
