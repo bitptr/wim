@@ -14,7 +14,6 @@ Selectors are missing:
 Workspaces:
 - Moving to workspaces that aren't a valid number shouldn't crash
 - Workspaces should be activated
-- All other commands that aren't valid on workspaces should print an error msg
 - Moving multipule windows to a workspace should work
 - Workspaces of number greater than 9 should work
 - Move workspaces between other workspaces by count

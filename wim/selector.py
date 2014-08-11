@@ -157,6 +157,9 @@ class WorkspacePredicateSelector(object):
     def move(self, window):
         self.model.move_window_to_workspace(window, self._workspace())
 
+    def runWindow(self, modification):
+        print("Window commands cannot be run on workspaces")
+
     @property
     def predicate_expr(self):
         return self.expression['workspace'][1:-1]
