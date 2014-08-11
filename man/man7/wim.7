@@ -1,0 +1,297 @@
+.Dd August 11, 2014
+.Dt WIM 7
+.Os
+.Sh NAME
+.Nm wim
+.Nd window editor
+.Sh DESCRIPTION
+Window management as inspired by
+.Xr ed 1 .
+This is a small language for manipulating your windows.
+It is not a window manager but instead an interface to your window manager.
+.Pp
+For example, to close all windows on the current workspace that are of type
+.Li normal ,
+.Li dialog ,
+.Li toolbar ,
+or
+.Li utility ,
+you would issue this
+.Nm
+command:
+.Pp
+.Dl :<?normal,?dialog,?toolbar,?utility>x
+.Pp
+The grammar of the language is explained first with the
+.Sx Special Cases ,
+then the
+.Sx Generic Grammar ,
+.Sx Selectors ,
+.Sx Predicates ,
+.Sx Commands ,
+and finally the
+.Sx Directions .
+.Ss Special Cases
+Comments in
+.Nm
+start with a double quote and go to the end of line, like so:
+.Pp
+.Dl \\" This is a comment.
+.Pp
+A line follows a very regular syntax, with two expections:
+.Bl -tag -width ":windows"
+.It Li :windows
+List all open windows.
+.It Li :desktop
+Show or hide the desktop (toggle).
+.El
+.
+.Ss Generic Grammar
+An expression is a selector, followed by an optional action, followed by an
+optional direction.
+A direction cannot exist without an action.
+.Ss Selectors
+All but one of the selectors apply only to windows in the current workspace.
+The selectors,
+.Va S ,
+are as follows:
+.Bl -tag -width "<P>"
+.It Li <P>
+Select all windows matching the predicate
+.Va P .
+See
+.Sx Predicates
+for more on predicates.
+If no predicate is passed, match all windows.
+.It Li [P]
+Select all workspaces matching the predicate
+.Va P .
+See
+.Sx Predicates
+for more on predicates.
+If no predicate is passed, match the current workspace.
+.It Li %
+The current window.
+.It Li #
+The prior window.
+.It Li gS
+Match the selector
+.Va S
+on all workspaces.
+.El
+.Ss Predicates
+Predicates are used to narrow a selection.
+They can be combined with a space (and) or a comma (or).
+In the following chart,
+.Va X
+is a value that is explained in the description.
+It can be a string, number, or regular expression.
+If
+.Va X
+is a regular expression, it must be surrounded by slashes:
+.Li /X/ .
+.Bl -tag -width "@X"
+.It Li #X
+The window with XID equal to
+.Va X .
+.It Li .X
+The window with class
+.Va X .
+.It Li @X
+The window named
+.Va X .
+.It Li &X
+The window with process ID (PID)
+.Va X .
+.It Li X
+The item number
+.Va X ,
+counted in a consistent order as defined by your window manager.
+.Ss Commands
+The commands and how they operate are dependant on what has been matched and
+how many.
+If an analogy can be stretched so that a command works in more contexts, then
+it will be.
+If you find a case where it is not then that is a bug.
+.Bl -tag -width "vM"
+.It
+The default command activates the selection.
+.It Li s
+Shade the windows.
+.It Li vM
+Maximize vertically.
+.It Li uV
+Unmaximize vertically.
+.It Li hM
+Maximize horizontally.
+.It Li uH
+Unmaximize horizontally.
+.It Li m
+Move the window.
+.It Li tS
+Toggle window shading.
+.It Li j
+Jump to the selected workspace.
+.It Li M
+Maximize the selected windows.
+.It Li uM
+Unmaximize the selected windows.
+.It Li x
+Close.
+.It Li p
+Pin the windows despite a scrolling virtual desktop.
+.It Li uP
+Unpin the windows.
+.It Li S
+Stick the windows to all workspaces.
+.It Li uS
+Unstick the windows.
+.It Li kP
+Do not show in (skip) the pager.
+.It Li kT
+Skip the tasklist.
+.It Li f
+Full screen.
+.It Li n
+Minimize (iconify).
+.It Li uN
+Unminimize.
+.It Li a
+Push the window above all other windows.
+.It Li uA
+Un-push the window above others.
+.It Li b
+Push the window below all other windows.
+.It Li uB
+Un-push the window below others.
+.It Li yM
+Move using the keyboard.
+.It Li yS
+Resize using the keyboard.
+.It Li r
+Rename the windows or workspaces.
+.It Li wC
+Set the workspace count.
+.It Li wL
+Set the workspace layout.
+.
+.Ss Directions
+Directions may be proceeded by a number.
+The directions are:
+.Bl -tag -width "r"
+.It Li r
+Right.
+.It Li l
+Left.
+.It Li u
+Up.
+.It Li d
+Down.
+.It Li n
+North.
+.It Li s
+South.
+.It Li e
+East.
+.It Li w
+West.
+.El
+.\" .Sh ENVIRONMENT
+.\" .Sh FILES
+.Sh EXAMPLES
+.
+Shade window with XID 25, on current workspace:
+.Pp
+.Dl :<#25>s
+.Pp
+Vertical maximize all
+.Li WM_CLASS=mate-terminal
+with
+.Li WM_NAME
+matching regexp
+.Li /~/ ,
+on current workspace:
+.Pp
+.Dl :<.mate-terminal @/~/>vM
+.Pp
+Move all
+.Li WM_CLASS=mate-terminal
+on any workspace to the worspace named
+.Li Terminals :
+.Pp
+.Dl :g<.mate-terminal>m[@Terminals]
+.Pp
+Toggle shading on the current window:
+.Pp
+.Dl :%tS
+.Pp
+Activate the prior window:
+.Pp
+.Dl :#
+.Pp
+Move the current window to the 3rd workspace:
+.Pp
+.Dl :%m[2]
+.Pp
+Jump to the 9th workspace:
+.Pp
+.Dl :[8]j
+.Pp
+Show the list of all windows, sorted by stack:
+.Pp
+.Dl :windows
+.Pp
+Produce the current workspace (aka The Monkey):
+.Pp
+.Dl :[]
+.Pp
+Activate all windows on current workspace (aka The Horse):
+.Pp
+.Dl :<>
+.Pp
+Activate the current window:
+.Pp
+.Dl :%
+.Pp
+Move to the workspace to the right:
+.Pp
+.Dl :[]mr
+.Pp
+Move to the workspace 3 to the right of the 2nd workspace:
+.Pp
+.Dl :[1]m3r
+.Pp
+Maximize all windows that are part of the application with PID 1234, on current
+workspace:
+.Pp
+.Dl :{&1234}M
+.Pp
+Close all windows on the current workspace that are of type
+.Li normal ,
+.Li dialog ,
+.Li toolbar ,
+or
+.Li utility ,
+on the current workspace:
+.Pp
+.Dl :<?normal,?dialog,?toolbar,?utility>x
+.Pp
+.
+.\" .Sh DIAGNOSTICS
+.Sh SEE ALSO
+.Xr ed 1 ,
+.Xr xprop 1 ,
+.Xr xwininfo 1
+.Sh STANDARDS
+This depends on the
+.Lk http://standards.freedesktop.org/wm-spec/wm-spec-latest.html Extended Window Manager Hints
+definition and only works with any window manager that implements EWMH.
+.\" .Sh HISTORY
+.Sh AUTHORS
+.An -split
+.An "Rebecca Meritz" Aq Mt rebecca@meritz.com
+.An "Mike Burns" Aq Mt mike@mike-burns.com
+.Sh CAVEATS
+This is the alpha release.
+There will be bugs, and we need your bug reports to find them all.
+.\" .Sh BUGS

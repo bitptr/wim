@@ -37,5 +37,4 @@ Refactoring:
 - Break Model into a state holder and state changer
 
 Documentation:
-- Man page
 - Fancy Web site
