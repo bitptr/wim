@@ -69,6 +69,9 @@ class CurrentWindowSelector(object):
     def move(self, window):
         print("Cannot move onto the current window")
 
+    def activate(self):
+        self.model.activate_window(self._window())
+
     def _window(self):
         return self.model.active_window
 
@@ -87,6 +90,9 @@ class PriorWindowSelector(object):
     def move(self, window):
         print("Cannot move onto the prior window")
 
+    def activate(self):
+        self.model.activate_window(self._window())
+
     def _window(self):
         return self.model.prior_window
 
@@ -101,17 +107,23 @@ class WindowPredicateSelector(object):
         for window in self._windows():
             modification(window)
 
+    def activate(self):
+        windows = self._windows()
+        if not windows:
+            pass
+        elif len(windows) != 1:
+            print("Only window may be activated at a time")
+        else:
+            self.model.activate_window(windows[0])
+
     def move(self, window):
         print("Cannot move onto a window predicate")
 
     def _windows(self):
         windows = self._predicate().windows()
-
         if len(windows) == 0:
             print("No match", file=sys.stderr)
-            return []
-        else:
-            return windows
+        return windows
 
     def _predicate(self):
         if len(self.predicate_expr) == 0:
@@ -156,6 +168,9 @@ class WorkspacePredicateSelector(object):
 
     def move(self, window):
         self.model.move_window_to_workspace(window, self._workspace())
+
+    def activate(self):
+        self.model.activate_workspace(self._workspace())
 
     def runWindow(self, modification):
         print("Window commands cannot be run on workspaces")

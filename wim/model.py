@@ -1,4 +1,6 @@
 from gi.repository import GObject, Wnck
+import datetime
+import calendar
 
 
 class Model(object):
@@ -70,6 +72,12 @@ class Model(object):
     def move_window_to_workspace(self, window, workspace):
         Wnck.Window.move_to_workspace(window, workspace)
 
+    def activate_window(self, window):
+        Wnck.Window.activate(window, self._now())
+
+    def activate_workspace(self, workspace):
+        Wnck.Workspace.activate(workspace, self._now())
+
     def workspace_number(self, number):
         return Wnck.Screen.get_workspace(self.screen, number)
 
@@ -85,6 +93,9 @@ class Model(object):
             workspace = Wnck.Window.get_workspace(window)
             if workspace:
                 self.workspaces[workspace].remove(window)
+
+    def _now(self):
+        return calendar.timegm(datetime.datetime.utcnow().timetuple())
 
     def _add_workspace(self, screen, workspace):
         self.workspaces[workspace] = []

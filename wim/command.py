@@ -157,15 +157,16 @@ class KeyboardSizeCommand(WindowCommand):
         Wnck.Window.keyboard_size(selection)
 
 
-class ActivateCommand(WindowCommand):
-    def _modification(self, selection):
-        now = calendar.timegm(datetime.datetime.utcnow().timetuple())
-        Wnck.Window.activate(selection, now)
+class ActivateCommand(object):
+    def __init__(self, expression, selector, obj):
+        self.selector = selector
+
+    def run(self):
+        self.selector.activate()
 
 
 class MoveCommand(object):
     def __init__(self, expression, selector, obj):
-        self.expression = expression
         self.selector = selector
         self.obj = obj
 
@@ -184,7 +185,7 @@ class CommandFactory(object):
             'uH': UnmaximizeHorizontalCommand,
             'm': MoveCommand,
             'tS': ToggleShadeCommand,
-            'j': UnknownCommand,
+            'j': ActivateCommand,
             'M': MaximizeCommand,
             'uM': UnmaximizeCommand,
             'x': CloseCommand,
