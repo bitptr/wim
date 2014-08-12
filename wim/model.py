@@ -1,4 +1,5 @@
 from gi.repository import GObject, Wnck
+import itertools
 import datetime
 import calendar
 
@@ -71,6 +72,9 @@ class Model(object):
 
     def by_group(self, group):
         return Wnck.ClassGroup.get(group)
+
+    def all_windows(self):
+        return list(itertools.chain(*self.workspaces.values()))
 
     # Callbacks
 

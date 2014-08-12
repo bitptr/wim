@@ -1,7 +1,5 @@
 from __future__ import print_function
 
-import itertools
-
 from gi.repository import Wnck
 import sys
 
@@ -56,7 +54,7 @@ class AllWindowsFilter(object):
 
     def _workspace(self):
         if self.is_global:
-            return list(itertools.chain(*self.model.workspaces.values()))
+            return self.model.all_windows()
         else:
             return self.model.active_workspace_windows()
 
