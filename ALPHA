@@ -1,5 +1,2 @@
 Selector need to respond to moveTo:
 - WindowPredicateSelector (:<>m[7])
-
-Predicates:
-- Regex - either make it work or remove all traces (and move back to TODO)

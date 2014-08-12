@@ -10,18 +10,18 @@ Window management as inspired by
 This is a small language for manipulating your windows.
 It is not a window manager but instead an interface to your window manager.
 .Pp
-For example, to close all windows on the current workspace that are of type
-.Li normal ,
-.Li dialog ,
-.Li toolbar ,
-or
-.Li utility ,
-you would issue this
-.Nm
-command:
-.Pp
-.Dl :<?normal,?dialog,?toolbar,?utility>x
-.Pp
+.\"For example, to close all windows on the current workspace that are of type
+.\".Li normal ,
+.\".Li dialog ,
+.\".Li toolbar ,
+.\"or
+.\".Li utility ,
+.\"you would issue this
+.\".Nm
+.\"command:
+.\".Pp
+.\".Dl :<?normal,?dialog,?toolbar,?utility>x
+.\".Pp
 The grammar of the language is explained first with the
 .Sx Special Cases ,
 then the
@@ -31,27 +31,32 @@ then the
 .Sx Commands ,
 and finally the
 .Sx Directions .
+.
+.
+.
 .Ss Special Cases
 Comments in
 .Nm
-start with a double quote and go to the end of line, like so:
-.Pp
-.Dl \\" This is a comment.
-.Pp
-A line follows a very regular syntax, with two expections:
-.Bl -tag -width ":windows"
-.It Li :windows
-List all open windows.
-.It Li :desktop
-Show or hide the desktop (toggle).
-.El
+start with a double quote and go to the end of line.
+.\"A line follows a very regular syntax, with two expections:
+.\".Bl -tag -width ":windows"
+.\".It Li :windows
+.\"List all open windows.
+.\".It Li :desktop
+.\"Show or hide the desktop (toggle).
+.\".El
+.
+.
 .
 .Ss Generic Grammar
 An expression is a selector, followed by an optional action, followed by an
 optional direction.
 A direction cannot exist without an action.
+.
+.
+.
 .Ss Selectors
-All but one of the selectors apply only to windows in the current workspace.
+.\" All but one of the selectors applys only to windows in the current workspace.
 The selectors,
 .Va S ,
 are as follows:
@@ -79,17 +84,21 @@ Match the selector
 .Va S
 on all workspaces.
 .El
+.
+.
+.
 .Ss Predicates
 Predicates are used to narrow a selection.
-They can be combined with a space (and) or a comma (or).
-In the following chart,
+.\"They can be combined with a space (and) or a comma (or).
+In the following list,
 .Va X
 is a value that is explained in the description.
-It can be a string, number, or regular expression.
-If
-.Va X
-is a regular expression, it must be surrounded by slashes:
-.Li /X/ .
+It can be a string or number.
+.\" or regular expression
+.\"If
+.\".Va X
+.\"is a regular expression, it must be surrounded by slashes:
+.\".Li /X/ .
 .Bl -tag -width "@X"
 .It Li #X
 The window with XID equal to
@@ -107,6 +116,10 @@ The window with process ID (PID)
 The item number
 .Va X ,
 counted in a consistent order as defined by your window manager.
+.El
+.
+.
+.
 .Ss Commands
 The commands and how they operate are dependant on what has been matched and
 how many.
@@ -168,15 +181,19 @@ Un-push the window below others.
 Move using the keyboard.
 .It Li yS
 Resize using the keyboard.
-.It Li r
-Rename the windows or workspaces.
-.It Li wC
-Set the workspace count.
-.It Li wL
-Set the workspace layout.
+.\".It Li r
+.\"Rename the windows or workspaces.
+.\".It Li wC
+.\"Set the workspace count.
+.\".It Li wL
+.\"Set the workspace layout.
+.El
+.
+.
 .
 .Ss Directions
 Directions may be proceeded by a number.
+The number represents a number of pixels or workspaces, depending on the context.
 The directions are:
 .Bl -tag -width "r"
 .It Li r
@@ -198,6 +215,9 @@ West.
 .El
 .\" .Sh ENVIRONMENT
 .\" .Sh FILES
+.
+.
+.
 .Sh EXAMPLES
 .
 Shade window with XID 25, on current workspace:
@@ -208,15 +228,15 @@ Vertical maximize all
 .Li WM_CLASS=mate-terminal
 with
 .Li WM_NAME
-matching regexp
-.Li /~/ ,
-on current workspace:
-.Pp
-.Dl :<.mate-terminal @/~/>vM
-.Pp
-Move all
-.Li WM_CLASS=mate-terminal
-on any workspace to the worspace named
+.\" matching regexp
+.\" .Li /~/ ,
+.\" on current workspace:
+.\".Pp
+.\".Dl :<.mate-terminal @/~/>vM
+.\".Pp
+.\"Move all
+.\".Li WM_CLASS=mate-terminal
+.\"on any workspace to the worspace named
 .Li Terminals :
 .Pp
 .Dl :g<.mate-terminal>m[@Terminals]
@@ -241,11 +261,11 @@ Show the list of all windows, sorted by stack:
 .Pp
 .Dl :windows
 .Pp
-Produce the current workspace (aka The Monkey):
+Activate the current workspace:
 .Pp
 .Dl :[]
 .Pp
-Activate all windows on current workspace (aka The Horse):
+Activate all windows on current workspace:
 .Pp
 .Dl :<>
 .Pp
@@ -266,16 +286,8 @@ workspace:
 .Pp
 .Dl :{&1234}M
 .Pp
-Close all windows on the current workspace that are of type
-.Li normal ,
-.Li dialog ,
-.Li toolbar ,
-or
-.Li utility ,
-on the current workspace:
-.Pp
-.Dl :<?normal,?dialog,?toolbar,?utility>x
-.Pp
+.
+.
 .
 .\" .Sh DIAGNOSTICS
 .Sh SEE ALSO

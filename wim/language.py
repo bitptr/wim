@@ -2,14 +2,13 @@ from __future__ import print_function
 
 from pyparsing import oneOf, StringEnd, Literal, Forward, Suppress, hexnums
 from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex, Combine
-from pyparsing import Optional, Or, White, Word, OneOrMore, CharsNotIn
+from pyparsing import Optional, Or, White, Word, OneOrMore
 
 
 number = OneOrMore(Word(nums))
 string = OneOrMore(Word(alphas + '~-/'))
-regexp = Literal('/') + CharsNotIn('/') + Literal('/')
 hexnumber = Combine(Literal('0x') + OneOrMore(Word(hexnums)))
-x = (regexp | hexnumber | number | string)('identifier')
+x = (hexnumber | number | string)('identifier')
 
 predicate = Or([
     Literal('#') + x,
