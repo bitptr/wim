@@ -2,7 +2,7 @@ grammar: (SAO | other) C*
 
 selectors (S):
 +-------+-----------------------------------------+
-| gS    | run S on all workspaces                 |
+| gS    | match S on all workspaces               |
 | <P>   | apply P in the context of windows       |
 | [P]   | apply P in the context of workspaces    |
 | {P}   | apply P in the context of applications  |

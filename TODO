@@ -3,33 +3,24 @@ Commands to Implement:
 - wC
 - wL
 
-Selector need to respond to moveTo:
-- WindowPredicateSelector
-
 Selectors are missing:
 - ApplicationSelector {} (see branch application-selector)
-- g
+
+Can predicates be combined (and, or)?
 
 Workspaces:
-- Moving to workspaces that aren't a valid number shouldn't crash
-- Moving multipule windows to a workspace should work
+- Moving multiple windows to a workspace should work
 - Workspaces of number greater than 9 should work
-- Move workspaces between other workspaces by count
-- Move the workspaces to other workspaces by direction
+- Move workspaces between other workspaces by count e.g. :[]mr
+- Move the workspaces to other workspaces by direction e.g. :[1]m3r
 
 Predicates:
 - Strings may have quotes
-- Regex
 
 Tests:
 - Move all Wnck into models.py
 - Then all commands can be unit tested without Wnck
 - Maybe crazy integration tests
-
-Bugs:
-- gs doesn't parse
-- <#0x160001d> doesn't parse
-- [#0x160001d] doesn't parse
 
 Refactoring:
 - PEP8
