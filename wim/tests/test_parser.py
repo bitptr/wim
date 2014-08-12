@@ -10,6 +10,12 @@ class TestParser(TestCase):
                '" shade window with XID 25, on current workspace']
         self.assertParse(s, exp)
 
+    def test_window_hex_xid_shade(self):
+        s = '<#0x160000d>s " shade window with XID 0x160000d, on current workspace'
+        exp = ['<', '#', '0x160000d', '>', 's',
+               '" shade window with XID 0x160000d, on current workspace']
+        self.assertParse(s, exp)
+
     def test_window_class_and_name_and_regexp_vertical_maximize(self):
         s = '<.term @/~/>vM " vertical maximize all'
         exp = ['<', '.', 'term', ' ', '@', '/', '~', '/', '>', 'vM',

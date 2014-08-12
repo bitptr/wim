@@ -9,7 +9,3 @@ Selector need to respond to moveTo:
 
 Predicates:
 - Regex - either make it work or remove all traces (and move back to TODO)
-
-Parser:
-- <#0x160001d> doesn't parse
-- [#0x160001d] doesn't parse
