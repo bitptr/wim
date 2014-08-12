@@ -127,6 +127,10 @@ class WindowPredicateSelector(object):
     def move(self, window):
         print("Cannot move onto a window predicate")
 
+    def moveTo(self, obj):
+        for window in self._windows():
+            obj.move(window)
+
     def _windows(self):
         windows = self._predicate().windows()
         if len(windows) == 0:

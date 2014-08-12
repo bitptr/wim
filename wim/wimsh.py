@@ -4,6 +4,7 @@ import sys
 import thread
 from .interact import InteractiveWim
 from .model import Model
+import ctypes
 
 
 def main():
@@ -15,7 +16,11 @@ def main():
     interact.onEOF(model.shutdown)
     interact.setModel(model)
 
+    x11 = ctypes.cdll.LoadLibrary('libX11.so')
+    x11.XInitThreads()
+    GObject.threads_init()
     Gdk.init(sys.argv)
+
     model.startup()
     thread.start_new_thread(GObject.MainLoop().run, ())
     interact.cmdloop()

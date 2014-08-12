@@ -45,6 +45,20 @@ class Model(object):
             self.screen, "workspace-created", self._add_workspace, True)
         GObject.signal_connect_closure(
             self.screen, "workspace-destroyed", self._remove_workspace, True)
+        #GObject.signal_connect_closure(
+        #        self.window, "actions-changed", ..., True)
+        #GObject.signal_connect_closure(
+        #        self.window, "class-changed", ..., True)
+        #GObject.signal_connect_closure(
+        #        self.window, "geometry-changed", ..., True)
+        #GObject.signal_connect_closure(
+        #        self.window, "icon-changed", ..., True)
+        #GObject.signal_connect_closure(
+        #        self.window, "name-changed", ..., True)
+        #GObject.signal_connect_closure(
+        #        self.window, "role-changed", ..., True)
+        #GObject.signal_connect_closure(
+        #        self.window, "state-changed", ..., True)
 
     def shutdown(self):
         print("shutdown")
@@ -87,6 +101,8 @@ class Model(object):
             self.workspaces[workspace].append(window)
         GObject.signal_connect_closure(
             window, "geometry-changed", self._geometry_changed, True)
+        GObject.signal_connect_closure(
+            window, "workspace-changed", self._update_workspace, True)
 
     def _remove_window(self, screen, window):
         if window:
@@ -102,6 +118,18 @@ class Model(object):
 
     def _remove_workspace(self, screen, workspace):
         del self.workspaces[workspace]
+
+    def _update_workspace(self, window):
+        if window:
+            workspace = Wnck.Window.get_workspace(window)
+            if workspace:
+                # remove from workspaces
+                for ws, windows in self.workspaces.iteritems():
+                    if window in windows:
+                        self.workspaces[ws].remove(window)
+                        break
+                # add to workspaces
+                self.workspaces[workspace].append(window)
 
     def _set_active_window(self, screen, prior_window):
         self.prior_window = prior_window
