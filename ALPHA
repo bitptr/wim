@@ -1,5 +1,3 @@
-Install manpages
-
 Workspaces:
 - Moving to workspaces that aren't a valid number shouldn't crash
 
