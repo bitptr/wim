@@ -23,10 +23,19 @@ Tests:
 - Then all commands can be unit tested without Wnck
 - Maybe crazy integration tests
 
+Bugs:
+- XidWindowsPredicate and ClassGroupPredicate don't respect workspace restrictions
+- Prior Window crashes if there is no prior window
+- Core dumps on g<>S commands
+
 Refactoring:
 - PEP8
 - Rename Model
 - Break Model into a state holder and state changer
+- The parser not the selector should handle invalid predicates per selector type
+- Factories should use dictionaries not if statements
 
 Documentation:
 - Fancy Web site
+
+- More than one window at a time can be activated, even though only the last one can remain truly active

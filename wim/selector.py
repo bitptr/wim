@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import sys
 
+from .util import drop_while
 from .predicate import (XidWindowsPredicate,
                         ClassWindowsPredicate,
                         NameWindowsPredicate,
@@ -10,28 +11,33 @@ from .predicate import (XidWindowsPredicate,
                         OffsetWindowsPredicate,
                         AllWindowsPredicate,
                         CurrentWorkspacePredicate,
-                        NumberWorkspaceSelector,
+                        NumberWorkspacePredicate,
                         UnknownPredicate)
 
 
 class SelectorFactory(object):
-    def __new__(klass, selector_expr, expression, model):
-        if selector_expr == '%':
-            return CurrentWindowSelector(selector_expr, expression, model)
-        elif selector_expr == '#':
-            return PriorWindowSelector(selector_expr, expression, model)
-        elif selector_expr == '<':
-            return WindowPredicateSelector(selector_expr, expression, model)
-        elif selector_expr == '[':
-            return WorkspacePredicateSelector(selector_expr, expression, model)
-        elif selector_expr is None:
-            return NullSelector(selector_expr, expression, model)
-        else:
-            return UnknownSelector(selector_expr, expression, model)
+    def __new__(klass, selector_expr, expression, model,
+                is_global=False):
+        selectors = {'%': CurrentWindowSelector,
+                     '#': PriorWindowSelector,
+                     'g': GlobalSelector,
+                     '<': WindowPredicateSelector,
+                     '[': WorkspacePredicateSelector,
+                     None: NullSelector}
+        klass = selectors.get(selector_expr, UnknownSelector)
+        return klass(selector_expr, expression, model, is_global)
+
+
+class GlobalSelector(object):
+    def __new__(klass, _old_selector_expr, expression, model, is_global):
+        selector_expr = drop_while(expression.get('global'),
+                                   lambda e: e == 'g')[0]
+        return SelectorFactory(selector_expr, expression, model,
+                               is_global=True)
 
 
 class NullSelector(object):
-    def __init__(self, selector_expr, expr, model):
+    def __init__(self, selector_expr, expr, model, is_global):
         pass
 
     def runWindow(self, modification):
@@ -39,7 +45,7 @@ class NullSelector(object):
 
 
 class UnknownSelector(object):
-    def __init__(self, selector_expr, expr, model):
+    def __init__(self, selector_expr, expr, model, is_global):
         self.selector_expr = selector_expr
 
     def runWindow(self, modification):
@@ -56,7 +62,7 @@ class UnknownSelector(object):
 
 
 class CurrentWindowSelector(object):
-    def __init__(self, selector_expr, expr, model):
+    def __init__(self, selector_expr, expr, model, is_global):
         self.selector_expr = selector_expr
         self.model = model
 
@@ -77,7 +83,7 @@ class CurrentWindowSelector(object):
 
 
 class PriorWindowSelector(object):
-    def __init__(self, selector_expr, expr, model):
+    def __init__(self, selector_expr, expr, model, is_global):
         self.selector_expr = selector_expr
         self.model = model
 
@@ -98,10 +104,12 @@ class PriorWindowSelector(object):
 
 
 class WindowPredicateSelector(object):
-    def __init__(self, selector_expr, expression, model):
+    def __init__(self, selector_expr, expression, model,
+                 is_global):
         self.selector_expr = selector_expr
         self.expression = expression
         self.model = model
+        self.is_global = is_global
 
     def runWindow(self, modification):
         for window in self._windows():
@@ -126,22 +134,23 @@ class WindowPredicateSelector(object):
         return windows
 
     def _predicate(self):
-        if len(self.predicate_expr) == 0:
-            return AllWindowsPredicate(self.predicate_expr, self.model)
-        elif self.predicate_expr[0] == '#':
-            return XidWindowsPredicate(self.predicate_expr, self.model)
-        elif self.predicate_expr[0] == '.':
-            return ClassWindowsPredicate(self.predicate_expr, self.model)
-        elif self.predicate_expr[0] == '@':
-            return NameWindowsPredicate(self.predicate_expr, self.model)
-        elif self.predicate_expr[0] == '&':
-            return PidWindowsPredicate(self.predicate_expr, self.model)
-        elif self.predicate_expr[0] == '?':
-            return TypeWindowsPredicate(self.predicate_expr, self.model)
-        elif self.predicate_expr[0].isdigit():
-            return OffsetWindowsPredicate(self.predicate_expr, self.model)
-        else:
-            return UnknownPredicate(self.predicate_expr, self.model)
+        def predicate_klass():
+            if len(self.predicate_expr) == 0:
+                return AllWindowsPredicate
+            elif self.predicate_expr[0].isdigit():
+                return OffsetWindowsPredicate
+            else:
+                predicates = {'#': XidWindowsPredicate,
+                              '.': ClassWindowsPredicate,
+                              '@': NameWindowsPredicate,
+                              '&': PidWindowsPredicate,
+                              '?': TypeWindowsPredicate}
+                return predicates.get(self.predicate_expr[0],
+                                      UnknownPredicate)
+
+        return predicate_klass()(self.predicate_expr,
+                                 self.model,
+                                 self.is_global)
 
     @property
     def predicate_expr(self):
@@ -150,21 +159,26 @@ class WindowPredicateSelector(object):
 
 class WorkspacePredicateSelector(object):
 
-    def __init__(self, selector_expr, expression, model):
+    def __init__(self, selector_expr, expression, model, is_global):
         self.selector_expr = selector_expr
         self.expression = expression
         self.model = model
+        self.is_global
 
     def _workspace(self):
         return self._predicate().workspace()
 
     def _predicate(self):
-        if len(self.predicate_expr) == 0:
-            return CurrentWorkspacePredicate(self.predicate_expr, self.model)
-        elif self.predicate_expr[0].isdigit():
-            return NumberWorkspaceSelector(self.predicate_expr, self.model)
-        else:
-            return UnknownPredicate(self.predicate_expr, self.model)
+        def predicate_klass():
+            if len(self.predicate_expr) == 0:
+                return CurrentWorkspacePredicate
+            elif self.predicate_expr[0].isdigit():
+                return NumberWorkspacePredicate
+            else:
+                return UnknownPredicate
+        return predicate_klass()(self.predicate_expr,
+                                 self.model,
+                                 self.is_global)
 
     def move(self, window):
         self.model.move_window_to_workspace(window, self._workspace())

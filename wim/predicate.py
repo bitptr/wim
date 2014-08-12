@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import itertools
+
 from gi.repository import Wnck
 import sys
 
@@ -7,7 +9,7 @@ from .util import maybe, singleton
 
 
 class XidWindowsPredicate(object):
-    def __init__(self, predicate_expr, model):
+    def __init__(self, predicate_expr, model, is_global):
         self.predicate_expr = predicate_expr
 
     def windows(self):
@@ -19,7 +21,7 @@ class XidWindowsPredicate(object):
 
 
 class ClassWindowsPredicate(object):
-    def __init__(self, predicate_expr, model):
+    def __init__(self, predicate_expr, model, is_global):
         self.predicate_expr = predicate_expr
 
     def windows(self):
@@ -34,16 +36,23 @@ class ClassWindowsPredicate(object):
 
 
 class AllWindowsFilter(object):
-    def __init__(self, predicate_expr, model):
+    def __init__(self, predicate_expr, model, is_global=False):
         self.predicate_expr = predicate_expr
         self.model = model
+        self.is_global = is_global
 
     @property
     def predicate(self):
         return self.predicate_expr[-1]
 
     def windows(self):
-        return filter(self._match, self.model.active_workspace_windows())
+        return filter(self._match, self._workspace())
+
+    def _workspace(self):
+        if self.is_global:
+            return list(itertools.chain(*self.model.workspaces.values()))
+        else:
+            return self.model.active_workspace_windows()
 
     def _match(self, window):
         return self._matcher(window)
@@ -96,7 +105,7 @@ class AllWindowsPredicate(AllWindowsFilter):
 
 
 class UnknownPredicate(object):
-    def __init__(self, predicate_expr, model):
+    def __init__(self, predicate_expr, model, is_global):
         self.predicate_expr = predicate_expr
 
     def windows(self):
@@ -112,7 +121,7 @@ class UnknownPredicate(object):
 
 
 class CurrentWorkspacePredicate(object):
-    def __init__(self, predicate_expr, model):
+    def __init__(self, predicate_expr, model, is_global):
         self.predicate_expr = predicate_expr
         self.model = model
 
@@ -120,8 +129,8 @@ class CurrentWorkspacePredicate(object):
         return self.model.active_workspace
 
 
-class NumberWorkspaceSelector(object):
-    def __init__(self, predicate_expr, model):
+class NumberWorkspacePredicate(object):
+    def __init__(self, predicate_expr, model, *args):
         self.predicate_expr = predicate_expr
         self.model = model
 

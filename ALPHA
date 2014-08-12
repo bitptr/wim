@@ -1,6 +1,3 @@
-Selectors are missing:
-- g
-
 Selector need to respond to moveTo:
 - WindowPredicateSelector (:<>m[7])
 
