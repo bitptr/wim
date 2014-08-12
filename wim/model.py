@@ -19,56 +19,24 @@ class Model(object):
         GObject.signal_connect_closure(
             self.screen, "active-workspace-changed",
             self._set_active_workspace, True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "application-closed", ..., True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "application-opened", ..., True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "background-changed", ..., True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "class-group-closed", ..., True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "class-group-opened", ..., True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "showing-desktop-changed", ..., True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "viewports-changed", ..., True)
         GObject.signal_connect_closure(
             self.screen, "window-closed", self._remove_window, True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "window-manager-changed", ..., True)
         GObject.signal_connect_closure(
             self.screen, "window-opened", self._add_window, True)
-        #GObject.signal_connect_closure(
-        #    self.screen, "window-stacking-changed", ..., True)
         GObject.signal_connect_closure(
             self.screen, "workspace-created", self._add_workspace, True)
         GObject.signal_connect_closure(
             self.screen, "workspace-destroyed", self._remove_workspace, True)
-        #GObject.signal_connect_closure(
-        #        self.window, "actions-changed", ..., True)
-        #GObject.signal_connect_closure(
-        #        self.window, "class-changed", ..., True)
-        #GObject.signal_connect_closure(
-        #        self.window, "geometry-changed", ..., True)
-        #GObject.signal_connect_closure(
-        #        self.window, "icon-changed", ..., True)
-        #GObject.signal_connect_closure(
-        #        self.window, "name-changed", ..., True)
-        #GObject.signal_connect_closure(
-        #        self.window, "role-changed", ..., True)
-        #GObject.signal_connect_closure(
-        #        self.window, "state-changed", ..., True)
+
+    @property
+    def screen(self):
+        return Wnck.Screen.get_default()
 
     def shutdown(self):
         print("shutdown")
 
     def active_workspace_windows(self):
         return self.workspaces[self.active_workspace]
-
-    @property
-    def screen(self):
-        return Wnck.Screen.get_default()
 
     def geometry_for(self, window):
         if window in self.windows and 'geometry' in self.windows[window]:
@@ -94,6 +62,11 @@ class Model(object):
 
     def workspace_number(self, number):
         return Wnck.Screen.get_workspace(self.screen, number)
+
+    def by_xid(self, xid):
+        return Wnck.Window.get(xid)
+
+    # Callbacks
 
     def _add_window(self, screen, window):
         workspace = Wnck.Window.get_workspace(window)

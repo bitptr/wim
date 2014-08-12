@@ -11,13 +11,18 @@ from .util import maybe, singleton
 class XidWindowsPredicate(object):
     def __init__(self, predicate_expr, model, is_global):
         self.predicate_expr = predicate_expr
+        self.model = model
 
     def windows(self):
-        return maybe([], singleton, Wnck.Window.get(self.predicate))
+        return maybe([], singleton, self.model.by_xid(self.predicate))
 
     @property
     def predicate(self):
-        return int(self.predicate_expr[-1])
+        xid = self.predicate_expr[-1]
+        if xid[1] == 'x':
+            return int(xid, 16)
+        else:
+            return int(xid)
 
 
 class ClassWindowsPredicate(object):
