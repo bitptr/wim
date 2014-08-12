@@ -28,12 +28,13 @@ class XidWindowsPredicate(object):
 class ClassWindowsPredicate(object):
     def __init__(self, predicate_expr, model, is_global):
         self.predicate_expr = predicate_expr
+        self.model = model
 
     def windows(self):
         def group_windows(group):
-            return (Wnck.ClassGroup.get_windows(group) or [])
+            return self.model.windows_for_group(group)
 
-        return maybe([], group_windows, Wnck.ClassGroup.get(self.predicate))
+        return maybe([], group_windows, self.model.by_group(self.predicate))
 
     @property
     def predicate(self):

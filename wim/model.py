@@ -66,6 +66,12 @@ class Model(object):
     def by_xid(self, xid):
         return Wnck.Window.get(xid)
 
+    def windows_for_group(self, group):
+        return (Wnck.ClassGroup.get_windows(group) or [])
+
+    def by_group(self, group):
+        return Wnck.ClassGroup.get(group)
+
     # Callbacks
 
     def _add_window(self, screen, window):
