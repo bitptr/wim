@@ -1,3 +1,5 @@
+Install manpages
+
 Workspaces:
 - Moving to workspaces that aren't a valid number shouldn't crash
 
@@ -5,11 +7,11 @@ Selectors are missing:
 - g
 
 Selector need to respond to moveTo:
-- WindowPredicateSelector
+- WindowPredicateSelector (:<>m[7])
 
 Predicates:
 - Regex - either make it work or remove all traces (and move back to TODO)
 
-Bugs:
+Parser:
 - <#0x160001d> doesn't parse
 - [#0x160001d] doesn't parse
