@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-from gi.repository import Wnck
 import sys
 
 from .util import maybe, singleton
@@ -76,21 +75,7 @@ class PidWindowsPredicate(AllWindowsFilter):
 
 class TypeWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        win_type = Wnck.Window.get_window_type(window)
-        return (win_type == self._win_type(self.predicate))
-
-    def _win_type(self, human):
-        types = {
-            'desktop': Wnck.WindowType.DESKTOP,
-            'dialog': Wnck.WindowType.DIALOG,
-            'dock': Wnck.WindowType.DOCK,
-            'menu': Wnck.WindowType.MENU,
-            'normal': Wnck.WindowType.NORMAL,
-            'splashscreen': Wnck.WindowType.SPLASHSCREEN,
-            'toolbar': Wnck.WindowType.TOOLBAR,
-            'utility': Wnck.WindowType.UTILITY,
-        }
-        return types[human]
+        return self.model.is_window_of_type(window, self.predicate)
 
 
 class OffsetWindowsPredicate(AllWindowsFilter):

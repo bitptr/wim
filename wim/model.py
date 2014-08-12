@@ -82,6 +82,21 @@ class Model(object):
     def window_pid(self, window):
         return Wnck.Window.get_pid(window)
 
+    def is_window_of_type(self, window, human):
+        win_type = Wnck.Window.get_window_type(window)
+        types = {
+            'desktop': Wnck.WindowType.DESKTOP,
+            'dialog': Wnck.WindowType.DIALOG,
+            'dock': Wnck.WindowType.DOCK,
+            'menu': Wnck.WindowType.MENU,
+            'normal': Wnck.WindowType.NORMAL,
+            'splashscreen': Wnck.WindowType.SPLASHSCREEN,
+            'toolbar': Wnck.WindowType.TOOLBAR,
+            'utility': Wnck.WindowType.UTILITY,
+        }
+        return (win_type == types[human])
+
+
     # Callbacks
 
     def _add_window(self, screen, window):
