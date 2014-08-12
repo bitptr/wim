@@ -13,6 +13,7 @@ Workspaces:
 - Workspaces of number greater than 9 should work
 - Move workspaces between other workspaces by count e.g. :[]mr
 - Move the workspaces to other workspaces by direction e.g. :[1]m3r
+- runWindow should run on all windows in the workspace
 
 Predicates:
 - Strings may have quotes

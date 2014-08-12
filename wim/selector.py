@@ -170,7 +170,11 @@ class WorkspacePredicateSelector(object):
         self.model.move_window_to_workspace(window, self._workspace())
 
     def activate(self):
-        self.model.activate_workspace(self._workspace())
+        workspace = self._workspace()
+        if workspace:
+            self.model.activate_workspace(workspace)
+        else:
+            print("No such workspace: %s" % self.predicate_expr[0])
 
     def runWindow(self, modification):
         print("Window commands cannot be run on workspaces")
