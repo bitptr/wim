@@ -76,6 +76,12 @@ class Model(object):
     def all_windows(self):
         return list(itertools.chain(*self.workspaces.values()))
 
+    def window_name(self, window):
+        return Wnck.Window.get_name(window)
+
+    def window_pid(self, window):
+        return Wnck.Window.get_pid(window)
+
     # Callbacks
 
     def _add_window(self, screen, window):

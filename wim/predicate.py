@@ -64,13 +64,13 @@ class AllWindowsFilter(object):
 
 class NameWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        name = Wnck.Window.get_name(window)
+        name = self.model.window_name(window)
         return (name == self.predicate)
 
 
 class PidWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        pid = Wnck.Window.get_pid(window)
+        pid = self.model.window_pid(window)
         return (pid == int(self.predicate))
 
 
