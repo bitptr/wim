@@ -28,6 +28,7 @@ Bugs:
   restrictions
 - Prior Window crashes if there is no prior window
 - Core dumps on g<>S commands
+- Moving causes the windows to grow in height (by a titlebar amount)
 
 Refactoring:
 - PEP8
@@ -42,6 +43,6 @@ Documentation:
 
 - More than one window at a time can be activated, even though only the last
   one can remain truly active
-- Regex
+- Regex selector
 - % should not be wim-gtk itself
 - pin wim-gtk to all workspaces

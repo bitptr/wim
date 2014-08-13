@@ -162,7 +162,6 @@ class WindowPredicateSelector(object):
 
 
 class WorkspacePredicateSelector(object):
-
     def __init__(self, selector_expr, expression, model, is_global):
         self.selector_expr = selector_expr
         self.expression = expression
@@ -186,6 +185,9 @@ class WorkspacePredicateSelector(object):
 
     def move(self, window):
         self.model.move_window_to_workspace(window, self._workspace())
+
+    def moveTo(self, obj):
+        obj.jump(self._workspace())
 
     def activate(self):
         workspace = self._workspace()
