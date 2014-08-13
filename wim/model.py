@@ -33,9 +33,6 @@ class Model(object):
     def screen(self):
         return Wnck.Screen.get_default()
 
-    def shutdown(self):
-        print("shutdown")
-
     def active_workspace_windows(self):
         return self.workspaces[self.active_workspace]
 
