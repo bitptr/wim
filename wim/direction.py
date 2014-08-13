@@ -13,7 +13,7 @@ class Direction(object):
 
     def jump(self, workspace):
         for _ in itertools.repeat(None, self.count):
-            if workspace is not None:
+            if workspace:
                 workspace = Wnck.Workspace.get_neighbor(
                     workspace, self._motion())
 

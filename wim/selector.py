@@ -76,7 +76,8 @@ class CurrentWindowSelector(object):
         print("Cannot move onto the current window")
 
     def activate(self):
-        self.model.activate_window(self._window())
+        if self._window():
+            self.model.activate_window(self._window())
 
     def _window(self):
         return self.model.active_window
@@ -97,7 +98,8 @@ class PriorWindowSelector(object):
         print("Cannot move onto the prior window")
 
     def activate(self):
-        self.model.activate_window(self._window())
+        if self._window():
+            self.model.activate_window(self._window())
 
     def _window(self):
         return self.model.prior_window

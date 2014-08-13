@@ -12,15 +12,14 @@ class Main(object):
     def run(self):
         signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-        self._init_model()
-
         Gtk.init(sys.argv)
-        self._prepare_window()
-        Gtk.main()
 
-    def _init_model(self):
-        self.model = Model()
+        window = self._prepare_window()
+
+        self.model = Model(avoid=window)
         self.model.startup()
+
+        Gtk.main()
 
     def _prepare_window(self):
         window = Gtk.Window.new(Gtk.WindowType.TOPLEVEL)
@@ -34,6 +33,8 @@ class Main(object):
 
         window.add(text)
         window.show_all()
+
+        return window
 
     def _run_entry(self, entry):
         line = entry.get_text()

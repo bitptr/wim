@@ -1,17 +1,19 @@
-from gi.repository import GObject, Wnck
+from gi.repository import GObject, Wnck, GdkX11
 import itertools
 import datetime
 import calendar
 
 
 class Model(object):
-    def __init__(self):
+    def __init__(self, avoid):
         self.workspaces = {}
         self.active_window = None
         self.prior_window = None
         self.active_workspace = None
         self.prior_workspace = None
         self.windows = {}
+        self.avoid = avoid
+        self.avoid_xid = None
 
     def startup(self):
         GObject.signal_connect_closure(
@@ -133,8 +135,22 @@ class Model(object):
                 self.workspaces[workspace].append(window)
 
     def _set_active_window(self, screen, prior_window):
-        self.prior_window = prior_window
-        self.active_window = Wnck.Screen.get_active_window(screen)
+        if self.avoid_xid is None:
+            self.avoid_xid = self.avoid.get_window().get_xid()
+
+        active_window = Wnck.Screen.get_active_window(screen)
+        active_window_xid = Wnck.Window.get_xid(active_window)
+
+        if self.avoid_xid == active_window_xid:
+            if self.active_window is None:
+                self.active_window = prior_window
+        else:
+            self.active_window = active_window
+
+        if prior_window:
+            prior_window_xid = Wnck.Window.get_xid(prior_window)
+            if prior_window_xid != active_window_xid:
+                self.prior_window = prior_window
 
     def _set_active_workspace(self, screen, prior_workspace):
         self.prior_workspace = prior_workspace
