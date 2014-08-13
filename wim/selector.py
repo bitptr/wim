@@ -167,7 +167,7 @@ class WorkspacePredicateSelector(object):
         self.selector_expr = selector_expr
         self.expression = expression
         self.model = model
-        self.is_global
+        self.is_global = is_global
 
     def _workspace(self):
         return self._predicate().workspace()
