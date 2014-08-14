@@ -67,7 +67,8 @@ class CurrentWindowSelector(object):
         self.model = model
 
     def runWindow(self, modification):
-        modification(self._window())
+        if self._window():
+            modification(self._window())
 
     def moveTo(self, obj):
         obj.move(self._window())

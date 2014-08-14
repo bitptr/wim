@@ -39,6 +39,7 @@ class Main(object):
     def _run_entry(self, entry):
         line = entry.get_text()
         self._run_line(line)
+        entry.set_text("")
 
     def _run_line(self, line):
         command = self._parse(line)
