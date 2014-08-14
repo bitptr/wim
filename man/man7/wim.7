@@ -37,7 +37,10 @@ and finally the
 .Ss Special Cases
 Comments in
 .Nm
-start with a double quote and go to the end of line.
+start with a double quote and go to the end of line:
+.Pp
+.Dl \&" This is a comment.
+.Pp
 .\"A line follows a very regular syntax, with two expections:
 .\".Bl -tag -width ":windows"
 .\".It Li :windows
@@ -292,6 +295,7 @@ workspace:
 .\" .Sh DIAGNOSTICS
 .Sh SEE ALSO
 .Xr ed 1 ,
+.Xr wim-gtk 1 ,
 .Xr xprop 1 ,
 .Xr xwininfo 1
 .Sh STANDARDS
