@@ -4,9 +4,7 @@
 # by Roman Bogorodskiy
 
 import os
-import shutil
 import subprocess
-import sys
 
 from setuptools import setup
 from setuptools.command.install import install
@@ -25,7 +23,7 @@ def abspath(path):
 
 class installer(install):
     def run(self):
-        install.run(self)
+        install.do_egg_install(self)
 
         man_dir = abspath("./man/")
 
@@ -43,7 +41,7 @@ setup(name='wim',
       classifiers=[
       ],
       keywords='x wm repl shell',
-      url='http://github.com/mike-burns/wim',
+      url='http://github.com/bitptr/wim',
       author='Mike Burns',
       author_email='mike@mike-burns.com',
       license='BSD',
@@ -53,5 +51,5 @@ setup(name='wim',
       },
       test_suite='nose.collector',
       tests_require=['nose'],
-      requires=['pyparsing (==2.0.1)'],
+      install_requires=['pyparsing'],
       cmdclass={"install": installer},)
