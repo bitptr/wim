@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wim.language import parser
+from ..language import parser
 
 
 class TestParser(TestCase):

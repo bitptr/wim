@@ -1,7 +1,8 @@
-from gi.repository import GObject, Wnck, GdkX11
 import itertools
 import datetime
 import calendar
+
+from gi.repository import GObject, Wnck, GdkX11
 
 
 class Model(object):

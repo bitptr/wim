@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from wim.util import maybe, singleton
+from ..util import maybe, singleton
 
 
 class TestUtil(TestCase):

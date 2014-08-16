@@ -1,8 +1,5 @@
-from __future__ import print_function
-
-import sys
-
 from .util import maybe, singleton
+from .exception import WimException
 
 
 class XidWindowsPredicate(object):
@@ -98,15 +95,15 @@ class UnknownPredicate(object):
         self.predicate_expr = predicate_expr
 
     def windows(self):
-        self._print_error()
+        self._raise_error()
         return []
 
     def workspace(self):
-        self._print_error()
+        self._raise_error()
         return None
 
-    def _print_error(self):
-        print("Unknown predicate: %s" % self.predicate_expr, file=sys.stderr)
+    def _raise_error(self):
+        raise WimException("Unknown predicate: %s" % self.predicate_expr)
 
 
 class CurrentWorkspacePredicate(object):

@@ -1,7 +1,3 @@
-from __future__ import print_function
-
-import sys
-
 from .util import drop_while
 from .predicate import (XidWindowsPredicate,
                         ClassWindowsPredicate,
@@ -13,6 +9,7 @@ from .predicate import (XidWindowsPredicate,
                         CurrentWorkspacePredicate,
                         NumberWorkspacePredicate,
                         UnknownPredicate)
+from .exception import WimException
 
 
 class SelectorFactory(object):
@@ -40,16 +37,16 @@ class UnknownSelector(object):
         self.selector_expr = selector_expr
 
     def runWindow(self, modification):
-        self._print_error()
+        self._raise_error()
 
     def moveTo(self, direction):
-        self._print_error()
+        self._raise_error()
 
     def move(self, window):
-        self._print_error()
+        self._raise_error()
 
-    def _print_error(self):
-        print("Unknown selector: %s" % self.selector_expr, file=sys.stderr)
+    def _raise_error(self):
+        raise WimException("Unknown selector: %s" % self.selector_expr)
 
 
 class CurrentWindowSelector(object):
@@ -65,7 +62,7 @@ class CurrentWindowSelector(object):
         obj.move(self._window())
 
     def move(self, window):
-        print("Cannot move onto the current window")
+        raise WimException("Cannot move onto the current window")
 
     def activate(self):
         if self._window():
@@ -88,7 +85,7 @@ class PriorWindowSelector(object):
         obj.move(self._window())
 
     def move(self, window):
-        print("Cannot move onto the prior window")
+        raise WimException("Cannot move onto the prior window")
 
     def activate(self):
         if self._window():
@@ -114,7 +111,7 @@ class WindowPredicateSelector(object):
         self.runWindow(self.model.activate_window)
 
     def move(self, window):
-        print("Cannot move onto a window predicate")
+        raise WimException("Cannot move onto a window predicate")
 
     def moveTo(self, obj):
         for window in self._windows():
@@ -182,8 +179,6 @@ class WorkspacePredicateSelector(object):
         workspace = self._workspace()
         if workspace:
             self.model.activate_workspace(workspace)
-        else:
-            print("No such workspace: %s" % self.predicate_expr[0])
 
     def runWindow(self, modification):
         map(modification, self._windows())

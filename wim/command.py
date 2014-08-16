@@ -1,9 +1,9 @@
-from __future__ import print_function
-
 import datetime
 import calendar
+
 from gi.repository import Wnck
-import sys
+
+from .exception import WimException
 
 
 class UnknownCommand:
@@ -12,7 +12,7 @@ class UnknownCommand:
 
     def run(self):
         command = self.expression.get('command')
-        print("Unknown command: %s" % command, file=sys.stderr)
+        raise WimException("Unknown command: %s" % command)
 
 
 class WindowCommand:

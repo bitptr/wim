@@ -1,8 +1,6 @@
-from __future__ import print_function
-
-from pyparsing import oneOf, StringEnd, Literal, Forward, Suppress, hexnums
-from pyparsing import alphas, empty, nums, ZeroOrMore, Keyword, Regex, Combine
-from pyparsing import Optional, Or, White, Word, OneOrMore
+from pyparsing import (oneOf, StringEnd, Literal, Forward, Suppress, hexnums,
+                       alphas, empty, nums, ZeroOrMore, Keyword, Regex,
+                       Combine, Optional, Or, White, Word, OneOrMore)
 
 
 number = OneOrMore(Word(nums))

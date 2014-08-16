@@ -1,0 +1,2 @@
+class WimException(Exception):
+    pass

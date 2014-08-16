@@ -25,6 +25,17 @@ Run it:
 
     % wim-gtk
 
+Style Guide
+-----------
+
+- [PEP8][pep8]
+
+- Imports should be divide into 3 sections with a line break in between:
+1) Python imports
+2) Third Party library imports
+3) Local imports (always proceded by a .)
+
+
 Resources
 ---------
 
@@ -40,3 +51,4 @@ Resources
 [docs]: https://developer.gnome.org/libwnck/stable/core.html
 [tutorial]: http://python-gtk-3-tutorial.readthedocs.org/en/latest/index.html
 [gi]: http://lazka.github.io/pgi-docs/
+[pep8]: http://legacy.python.org/dev/peps/pep-0008/

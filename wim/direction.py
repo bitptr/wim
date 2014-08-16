@@ -1,5 +1,6 @@
-from gi.repository import Wnck
 import itertools
+
+from gi.repository import Wnck
 
 
 class Direction(object):

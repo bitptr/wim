@@ -1,11 +1,13 @@
-from gi.repository import Gtk, Gdk
 import sys
 import signal
+
+from gi.repository import Gtk, Gdk
 from pyparsing import ParseException
 
 from .model import Model
 from .language import parser
 from .runner import Runner
+from .exception import WimException
 
 
 class WimGtk(object):
@@ -38,8 +40,13 @@ class WimGtk(object):
 
     def _run_entry(self, entry):
         line = entry.get_text()
-        self._run_line(line)
-        entry.set_text("")
+        try:
+            self._run_line(line)
+            entry.set_text("")
+            entry.set_icon_from_stock(0)
+        except WimException, e:
+            entry.set_icon_from_stock(0, Gtk.STOCK_DIALOG_ERROR)
+            entry.set_text(line + "  " + e.message)
 
     def _run_line(self, line):
         command = self._parse(line)
@@ -51,7 +58,7 @@ class WimGtk(object):
         try:
             return parser.parseString(line)
         except ParseException, e:
-            print "ParseException:", e
+            raise WimException("Parse Exception: " + e.msg)
 
     def _set_window_on_bottom(self, window):
         screen_width = Gdk.Screen.width()
