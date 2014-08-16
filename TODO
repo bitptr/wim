@@ -33,7 +33,6 @@ Refactoring:
 - Break Model into a state holder and state changer
 - The parser not the selector should handle invalid predicates per selector
   type
-- Remove Null objects and handle Parse errors in a clearer way
 
 Documentation:
 - Fancy Web site

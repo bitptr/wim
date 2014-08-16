@@ -4,7 +4,7 @@ from .object_factory import ObjectFactory
 
 
 def Runner(expression, model):
-    selector = SelectorFactory(expression.get('selector'), expression, model)
-    command = CommandFactory(expression.get('command'))
-    obj = ObjectFactory(expression.get('direction'), expression, model)
+    selector = SelectorFactory(expression['selector'], expression, model)
+    command = CommandFactory(expression['command'])
+    obj = ObjectFactory(expression['direction'], expression, model)
     return command(expression, selector, obj)

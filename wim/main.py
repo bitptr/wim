@@ -8,7 +8,7 @@ from .language import parser
 from .runner import Runner
 
 
-class Main(object):
+class WimGtk(object):
     def run(self):
         signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -43,15 +43,15 @@ class Main(object):
 
     def _run_line(self, line):
         command = self._parse(line)
-        runner = Runner(command, self.model)
-        runner.run()
+        if command:
+            runner = Runner(command, self.model)
+            runner.run()
 
     def _parse(self, line):
         try:
             return parser.parseString(line)
         except ParseException, e:
             print "ParseException:", e
-            return {}
 
     def _set_window_on_bottom(self, window):
         screen_width = Gdk.Screen.width()
@@ -66,7 +66,5 @@ class Main(object):
         window.move(x, y)
 
 
-
 def main():
-    m = Main()
-    m.run()
+    WimGtk().run()

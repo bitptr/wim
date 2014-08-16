@@ -1,6 +1,7 @@
 from gi.repository import Wnck
 import itertools
 
+
 class Direction(object):
     def __init__(self, model, count):
         self.model = model

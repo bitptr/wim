@@ -15,14 +15,6 @@ class UnknownCommand:
         print("Unknown command: %s" % command, file=sys.stderr)
 
 
-class NullCommand:
-    def __init__(self, expression, selector, obj):
-        pass
-
-    def run(self):
-        pass
-
-
 class WindowCommand:
     def __init__(self, expression, selector, obj):
         self.expression = expression
@@ -208,6 +200,5 @@ class CommandFactory(object):
             'wC': UnknownCommand,
             'wL': UnknownCommand,
             '[]': ActivateCommand,
-            'None': NullCommand,
         }
         return mappings.get(str(command_expression), UnknownCommand)

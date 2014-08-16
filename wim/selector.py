@@ -22,8 +22,7 @@ class SelectorFactory(object):
                      '#': PriorWindowSelector,
                      'g': GlobalSelector,
                      '<': WindowPredicateSelector,
-                     '[': WorkspacePredicateSelector,
-                     None: NullSelector}
+                     '[': WorkspacePredicateSelector}
         klass = selectors.get(selector_expr, UnknownSelector)
         return klass(selector_expr, expression, model, is_global)
 
@@ -34,14 +33,6 @@ class GlobalSelector(object):
                                    lambda e: e == 'g')[0]
         return SelectorFactory(selector_expr, expression, model,
                                is_global=True)
-
-
-class NullSelector(object):
-    def __init__(self, selector_expr, expr, model, is_global):
-        pass
-
-    def runWindow(self, modification):
-        pass
 
 
 class UnknownSelector(object):
