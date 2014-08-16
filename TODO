@@ -39,5 +39,4 @@ Documentation:
 
 GTK:
 - pin wim-gtk to all workspaces
-- Clear tool bar after command ran
 - Print errors to GTK instead of python
