@@ -23,7 +23,7 @@ Build program locally:
 
 Run it:
 
-    % ~/.virtualenvs/wim/bin/wimsh
+    % wim-gtk
 
 Resources
 ---------
@@ -31,8 +31,12 @@ Resources
 * [Extended Window Manager Hints][ewmh] (EWMH)
 * [Wnck Docs for C][docs] (None exist for Python; Wnck is an implementation of
   EWMH)
+* [The Python GTK+ 3 Tutorial][tutorial]
+* [Python GObject Introspection API Reference][gi]
 * xprop(1)
 * xwininfo(1)
 
 [ewmh]: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html
 [docs]: https://developer.gnome.org/libwnck/stable/core.html
+[tutorial]: http://python-gtk-3-tutorial.readthedocs.org/en/latest/index.html
+[gi]: http://lazka.github.io/pgi-docs/
