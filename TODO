@@ -11,8 +11,6 @@ Can predicates be combined (and, or)?
 Workspaces:
 - Moving multiple windows to a workspace should work
 - Workspaces of number greater than 9 should work
-- Move workspaces between other workspaces by count e.g. :[]mr
-- Move the workspaces to other workspaces by direction e.g. :[1]m3r
 - runWindow should run on all windows in the workspace
 
 Predicates:
@@ -36,7 +34,6 @@ Refactoring:
 - Break Model into a state holder and state changer
 - The parser not the selector should handle invalid predicates per selector
   type
-- Factories should use dictionaries not if statements
 
 Documentation:
 - Fancy Web site
@@ -44,5 +41,4 @@ Documentation:
 - More than one window at a time can be activated, even though only the last
   one can remain truly active
 - Regex selector
-- % should not be wim-gtk itself
 - pin wim-gtk to all workspaces

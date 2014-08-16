@@ -174,6 +174,9 @@ class WorkspacePredicateSelector(object):
     def _workspace(self):
         return self._predicate().workspace()
 
+    def _windows(self):
+        return self.model.workspaces[self._workspace()]
+
     def _predicate(self):
         def predicate_klass():
             if len(self.predicate_expr) == 0:
@@ -200,7 +203,7 @@ class WorkspacePredicateSelector(object):
             print("No such workspace: %s" % self.predicate_expr[0])
 
     def runWindow(self, modification):
-        print("Window commands cannot be run on workspaces")
+        map(modification, self._windows())
 
     @property
     def predicate_expr(self):
