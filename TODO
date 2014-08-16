@@ -24,7 +24,6 @@ Tests:
 Bugs:
 - XidWindowsPredicate and ClassGroupPredicate don't respect workspace
   restrictions
-- Prior Window crashes if there is no prior window
 - Moving causes the windows to grow in height (by a titlebar amount)
 
 Refactoring:
