@@ -119,13 +119,7 @@ class WindowPredicateSelector(object):
             modification(window)
 
     def activate(self):
-        windows = self._windows()
-        if not windows:
-            pass
-        elif len(windows) != 1:
-            print("Only window may be activated at a time")
-        else:
-            self.model.activate_window(windows[0])
+        self.runWindow(self.model.activate_window)
 
     def move(self, window):
         print("Cannot move onto a window predicate")
@@ -135,10 +129,7 @@ class WindowPredicateSelector(object):
             obj.move(window)
 
     def _windows(self):
-        windows = self._predicate().windows()
-        if len(windows) == 0:
-            print("No match", file=sys.stderr)
-        return windows
+        return self._predicate().windows()
 
     def _predicate(self):
         def predicate_klass():

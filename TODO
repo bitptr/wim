@@ -5,8 +5,7 @@ Commands to Implement:
 
 Selectors are missing:
 - ApplicationSelector {} (see branch application-selector)
-
-Can predicates be combined (and, or)?
+- Regex selector
 
 Workspaces:
 - Moving multiple windows to a workspace should work
@@ -15,6 +14,7 @@ Workspaces:
 
 Predicates:
 - Strings may have quotes
+- Can predicates be combined (and, or)?
 
 Tests:
 - Move all Wnck into models.py
@@ -25,7 +25,6 @@ Bugs:
 - XidWindowsPredicate and ClassGroupPredicate don't respect workspace
   restrictions
 - Prior Window crashes if there is no prior window
-- Core dumps on g<>S commands
 - Moving causes the windows to grow in height (by a titlebar amount)
 
 Refactoring:
@@ -34,11 +33,12 @@ Refactoring:
 - Break Model into a state holder and state changer
 - The parser not the selector should handle invalid predicates per selector
   type
+- Remove Null objects and handle Parse errors in a clearer way
 
 Documentation:
 - Fancy Web site
 
-- More than one window at a time can be activated, even though only the last
-  one can remain truly active
-- Regex selector
+GTK:
 - pin wim-gtk to all workspaces
+- Clear tool bar after command ran
+- Print errors to GTK instead of python
