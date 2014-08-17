@@ -55,18 +55,22 @@ class CurrentWindowSelector(object):
         self.model = model
 
     def runWindow(self, modification):
-        if self._window():
-            modification(self._window())
+        window = self._window()
+        if window:
+            modification(window)
 
     def moveTo(self, obj):
-        obj.move(self._window())
+        window = self._window()
+        if window:
+            obj.move(window)
 
     def move(self, window):
         raise WimException("Cannot move onto the current window")
 
     def activate(self):
-        if self._window():
-            self.model.activate_window(self._window())
+        window = self._window()
+        if window:
+            self.model.activate_window(window)
 
     def _window(self):
         return self.model.active_window

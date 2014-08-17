@@ -4,7 +4,7 @@ from .selector import SelectorFactory
 
 
 class ObjectFactory(object):
-    def __new__(klass, direction_expr, expression, model):
+    def __new__(klass, direction_expr, expression, wnck_wrapper):
         count = 1
         if 'count' in expression:
             count = int(''.join(expression['count']))
@@ -23,6 +23,6 @@ class ObjectFactory(object):
         selector_expr = None if not direction_expr else direction_expr[0]
 
         if 'logical' in expression:
-            return logical[expression['logical']](model, count)
+            return logical[expression['logical']](wnck_wrapper, count)
         else:
-            return SelectorFactory(selector_expr, expression, model)
+            return SelectorFactory(selector_expr, expression, wnck_wrapper)

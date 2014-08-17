@@ -17,7 +17,6 @@ Predicates:
 - Can predicates be combined (and, or)?
 
 Tests:
-- Move all Wnck into models.py
 - Then all commands can be unit tested without Wnck
 - Maybe crazy integration tests
 
@@ -27,9 +26,7 @@ Bugs:
 - Moving causes the windows to grow in height (by a titlebar amount)
 
 Refactoring:
-- PEP8
-- Rename Model
-- Break Model into a state holder and state changer
+- Move all Wnck into models.py
 - The parser not the selector should handle invalid predicates per selector
   type
 

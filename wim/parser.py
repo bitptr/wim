@@ -1,7 +1,9 @@
 from pyparsing import (oneOf, StringEnd, Literal, Forward, Suppress, hexnums,
                        alphas, empty, nums, ZeroOrMore, Keyword, Regex,
-                       Combine, Optional, Or, White, Word, OneOrMore)
+                       Combine, Optional, Or, White, Word, OneOrMore,
+                       ParseException)
 
+from .exception import WimException
 
 number = OneOrMore(Word(nums))
 string = OneOrMore(Word(alphas + '~-/'))
@@ -85,3 +87,10 @@ parser = Or([
     selector('selector') + command('command') + direction('direction'),
     other,
 ]) + ZeroOrMore(comment) + StringEnd()
+
+
+def parse(line):
+    try:
+        return parser.parseString(line)
+    except ParseException, e:
+        raise WimException("Parse Exception: " + e.msg)

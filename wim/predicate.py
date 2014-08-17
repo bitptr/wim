@@ -3,12 +3,12 @@ from .exception import WimException
 
 
 class XidWindowsPredicate(object):
-    def __init__(self, predicate_expr, model, is_global):
+    def __init__(self, predicate_expr, wnck_wrapper, is_global):
         self.predicate_expr = predicate_expr
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
 
     def windows(self):
-        return maybe([], singleton, self.model.by_xid(self.predicate))
+        return maybe([], singleton, self.wnck_wrapper.by_xid(self.predicate))
 
     @property
     def predicate(self):
@@ -20,15 +20,16 @@ class XidWindowsPredicate(object):
 
 
 class ClassWindowsPredicate(object):
-    def __init__(self, predicate_expr, model, is_global):
+    def __init__(self, predicate_expr, wnck_wrapper, is_global):
         self.predicate_expr = predicate_expr
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
 
     def windows(self):
         def group_windows(group):
-            return self.model.windows_for_group(group)
+            return self.wnck_wrapper.windows_for_group(group)
 
-        return maybe([], group_windows, self.model.by_group(self.predicate))
+        return maybe([], group_windows,
+                     self.wnck_wrapper.by_group(self.predicate))
 
     @property
     def predicate(self):
@@ -36,9 +37,9 @@ class ClassWindowsPredicate(object):
 
 
 class AllWindowsFilter(object):
-    def __init__(self, predicate_expr, model, is_global=False):
+    def __init__(self, predicate_expr, wnck_wrapper, is_global=False):
         self.predicate_expr = predicate_expr
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
         self.is_global = is_global
 
     @property
@@ -50,9 +51,9 @@ class AllWindowsFilter(object):
 
     def _workspace(self):
         if self.is_global:
-            return self.model.all_windows()
+            return self.wnck_wrapper.all_windows()
         else:
-            return self.model.active_workspace_windows()
+            return self.wnck_wrapper.active_workspace_windows()
 
     def _match(self, window):
         return self._matcher(window)
@@ -60,24 +61,25 @@ class AllWindowsFilter(object):
 
 class NameWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        name = self.model.window_name(window)
+        name = self.wnck_wrapper.window_name(window)
         return (name == self.predicate)
 
 
 class PidWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        pid = self.model.window_pid(window)
+        pid = self.wnck_wrapper.window_pid(window)
         return (pid == int(self.predicate))
 
 
 class TypeWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        return self.model.is_window_of_type(window, self.predicate)
+        return self.wnck_wrapper.is_window_of_type(window, self.predicate)
 
 
 class OffsetWindowsPredicate(AllWindowsFilter):
-    def __init__(self, predicate_expr, model):
-        super(OffsetWindowsPredicate, self).__init__(predicate_expr, model)
+    def __init__(self, predicate_expr, wnck_wrapper):
+        super(OffsetWindowsPredicate, self).__init__(
+            predicate_expr, wnck_wrapper)
         self.count = -1
 
     def _matcher(self, window):
@@ -91,7 +93,7 @@ class AllWindowsPredicate(AllWindowsFilter):
 
 
 class UnknownPredicate(object):
-    def __init__(self, predicate_expr, model, is_global):
+    def __init__(self, predicate_expr, wnck_wrapper, is_global):
         self.predicate_expr = predicate_expr
 
     def windows(self):
@@ -107,18 +109,18 @@ class UnknownPredicate(object):
 
 
 class CurrentWorkspacePredicate(object):
-    def __init__(self, predicate_expr, model, is_global):
+    def __init__(self, predicate_expr, wnck_wrapper, is_global):
         self.predicate_expr = predicate_expr
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
 
     def workspace(self):
-        return self.model.active_workspace
+        return self.wnck_wrapper.active_workspace
 
 
 class NumberWorkspacePredicate(object):
-    def __init__(self, predicate_expr, model, *args):
+    def __init__(self, predicate_expr, wnck_wrapper, *args):
         self.predicate_expr = predicate_expr
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
 
     def workspace(self):
-        return self.model.workspace_number(int(self.predicate_expr[0]))
+        return self.wnck_wrapper.workspace_number(int(self.predicate_expr[0]))

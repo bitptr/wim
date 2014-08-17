@@ -3,8 +3,9 @@ from .command import CommandFactory
 from .object_factory import ObjectFactory
 
 
-def Runner(expression, model):
-    selector = SelectorFactory(expression['selector'], expression, model)
+def Runner(expression, wnck_wrapper):
+    selector = SelectorFactory(expression['selector'], expression,
+                               wnck_wrapper)
     command = CommandFactory(expression['command'])
-    obj = ObjectFactory(expression['direction'], expression, model)
+    obj = ObjectFactory(expression['direction'], expression, wnck_wrapper)
     return command(expression, selector, obj)
