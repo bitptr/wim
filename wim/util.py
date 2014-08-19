@@ -1,3 +1,7 @@
+import datetime
+import calendar
+
+
 def maybe(base, f, potential):
     if potential is None:
         return base
@@ -23,3 +27,7 @@ def str_to_xid(string):
         return int(string, 16)
     else:
         return int(string)
+
+
+def now():
+    return calendar.timegm(datetime.datetime.utcnow().timetuple())

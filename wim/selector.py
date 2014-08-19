@@ -1,4 +1,4 @@
-from .util import drop_while
+from .util import drop_while, now
 from .predicate import (XidWindowsPredicate,
                         XidApplicationPredicate,
                         NameApplicationPredicate,
@@ -16,7 +16,7 @@ from .exception import WimException
 
 
 class SelectorFactory(object):
-    def __new__(klass, selector_expr, expression, model,
+    def __new__(klass, selector_expr, expression, wnck_wrapper,
                 is_global=False):
         selectors = {'%': CurrentWindowSelector,
                      '#': PriorWindowSelector,
@@ -25,19 +25,19 @@ class SelectorFactory(object):
                      '{': ApplicationPredicateSelector,
                      '[': WorkspacePredicateSelector}
         klass = selectors.get(selector_expr, UnknownSelector)
-        return klass(selector_expr, expression, model, is_global)
+        return klass(selector_expr, expression, wnck_wrapper, is_global)
 
 
 class GlobalSelector(object):
-    def __new__(klass, _old_selector_expr, expression, model, is_global):
+    def __new__(klass, _old_selector, expression, wnck_wrapper, is_global):
         selector_expr = drop_while(expression.get('global'),
                                    lambda e: e == 'g')[0]
-        return SelectorFactory(selector_expr, expression, model,
+        return SelectorFactory(selector_expr, expression, wnck_wrapper,
                                is_global=True)
 
 
 class UnknownSelector(object):
-    def __init__(self, selector_expr, expr, model, is_global):
+    def __init__(self, selector_expr, expr, wnck_wrapper, is_global):
         self.selector_expr = selector_expr
 
     def runWindow(self, modification):
@@ -57,9 +57,9 @@ class UnknownSelector(object):
 
 
 class CurrentWindowSelector(object):
-    def __init__(self, selector_expr, expr, model, is_global):
+    def __init__(self, selector_expr, expr, wnck_wrapper, is_global):
         self.selector_expr = selector_expr
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
 
     def runWindow(self, modification):
         window = self._window()
@@ -77,16 +77,16 @@ class CurrentWindowSelector(object):
     def activate(self):
         window = self._window()
         if window:
-            self.model.activate_window(window)
+            self.wnck_wrapper.call_window("activate", window, now())
 
     def _window(self):
-        return self.model.active_window
+        return self.wnck_wrapper.active_window()
 
 
 class PriorWindowSelector(object):
-    def __init__(self, selector_expr, expr, model, is_global):
+    def __init__(self, selector_expr, expr, wnck_wrapper, is_global):
         self.selector_expr = selector_expr
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
 
     def runWindow(self, modification):
         window = self._window()
@@ -104,19 +104,19 @@ class PriorWindowSelector(object):
     def activate(self):
         window = self._window()
         if window:
-            self.model.activate_window(window)
+            self.wnck_wrapper.call_window("activate", window, now())
 
     def _window(self):
-        return self.model.prior_window
+        return self.wnck_wrapper.prior_window()
 
 
 class WindowsPredicateSelector(object):
     """A selector that runs a command on multiple windows"""
 
-    def __init__(self, selector_expr, expression, model, is_global):
+    def __init__(self, selector_expr, expression, wnck_wrapper, is_global):
         self.selector_expr = selector_expr
         self.expression = expression
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
         self.is_global = is_global
 
     def runWindow(self, modification):
@@ -124,7 +124,8 @@ class WindowsPredicateSelector(object):
             modification(window)
 
     def activate(self):
-        self.runWindow(self.model.activate_window)
+        for window in self._windows():
+            self.wnck_wrapper.call_window("activate", window, now())
 
     def move(self, window):
         raise WimException("Cannot move onto a window predicate")
@@ -154,7 +155,7 @@ class WindowPredicateSelector(WindowsPredicateSelector):
                                       InvalidPredicate)
 
         return predicate_klass()(self.predicate_expr,
-                                 self.model,
+                                 self.wnck_wrapper,
                                  self.is_global)
 
     @property
@@ -172,7 +173,7 @@ class ApplicationPredicateSelector(WindowsPredicateSelector):
                                   InvalidPredicate)
 
         return predicate_klass()(self.predicate_expr,
-                                 self.model,
+                                 self.wnck_wrapper,
                                  self.is_global)
 
     @property
@@ -181,17 +182,17 @@ class ApplicationPredicateSelector(WindowsPredicateSelector):
 
 
 class WorkspacePredicateSelector(object):
-    def __init__(self, selector_expr, expression, model, is_global):
+    def __init__(self, selector_expr, expression, wnck_wrapper, is_global):
         self.selector_expr = selector_expr
         self.expression = expression
-        self.model = model
+        self.wnck_wrapper = wnck_wrapper
         self.is_global = is_global
 
     def _workspace(self):
         return self._predicate().workspace()
 
     def _windows(self):
-        return self.model.workspaces[self._workspace()]
+        return self.wnck_wrapper.windows_in_workspace(self._workspace())
 
     def _predicate(self):
         def predicate_klass():
@@ -202,11 +203,12 @@ class WorkspacePredicateSelector(object):
             else:
                 return InvalidPredicate
         return predicate_klass()(self.predicate_expr,
-                                 self.model,
+                                 self.wnck_wrapper,
                                  self.is_global)
 
     def move(self, window):
-        self.model.move_window_to_workspace(window, self._workspace())
+        self.wnck_wrapper.call_window("move_to_workspace", window,
+                                      self._workspace())
 
     def moveTo(self, obj):
         obj.jump(self._workspace())
@@ -214,7 +216,7 @@ class WorkspacePredicateSelector(object):
     def activate(self):
         workspace = self._workspace()
         if workspace:
-            self.model.activate_workspace(workspace)
+            self.wnck_wrapper.call_workspace("activate", workspace, now())
 
     def runWindow(self, modification):
         map(modification, self._windows())

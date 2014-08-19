@@ -1,5 +1,3 @@
-from gi.repository import Wnck
-
 from .util import maybe, singleton, str_to_xid
 from .exception import WimException
 
@@ -10,7 +8,8 @@ class XidWindowsPredicate(object):
         self.wnck_wrapper = wnck_wrapper
 
     def windows(self):
-        return maybe([], singleton, self.wnck_wrapper.by_xid(self.predicate))
+        return maybe([], singleton,
+                     self.wnck_wrapper.call_window("get", self.predicate))
 
     @property
     def predicate(self):
@@ -24,10 +23,11 @@ class ClassWindowsPredicate(object):
 
     def windows(self):
         def group_windows(group):
-            return self.wnck_wrapper.windows_for_group(group)
+            return (self.wnck_wrapper.call_class_group("get_windows", group)
+                    or [])
 
         return maybe([], group_windows,
-                     self.wnck_wrapper.by_group(self.predicate))
+                     self.wnck_wrapper.call_class_group("get", self.predicate))
 
     @property
     def predicate(self):
@@ -59,13 +59,13 @@ class AllWindowsFilter(object):
 
 class NameWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        name = self.wnck_wrapper.window_name(window)
+        name = self.wnck_wrapper.call_window("get_name", window)
         return (name == self.predicate)
 
 
 class PidWindowsPredicate(AllWindowsFilter):
     def _matcher(self, window):
-        pid = self.wnck_wrapper.window_pid(window)
+        pid = self.wnck_wrapper.call_window("get_pid", window)
         return (pid == int(self.predicate))
 
 
@@ -112,7 +112,7 @@ class CurrentWorkspacePredicate(object):
         self.wnck_wrapper = wnck_wrapper
 
     def workspace(self):
-        return self.wnck_wrapper.active_workspace
+        return self.wnck_wrapper.active_workspace()
 
 
 class NumberWorkspacePredicate(object):
@@ -121,7 +121,8 @@ class NumberWorkspacePredicate(object):
         self.wnck_wrapper = wnck_wrapper
 
     def workspace(self):
-        return self.wnck_wrapper.workspace_number(int(self.predicate_expr[0]))
+        return self.wnck_wrapper.call_screen("get_workspace",
+                                             (int(self.predicate_expr[0])))
 
 
 class ApplicationPredicate(object):
@@ -140,16 +141,20 @@ class ApplicationPredicate(object):
             return self.wnck_wrapper.active_workspace_windows()
 
     def _match(self, window):
-        application = Wnck.Window.get_application(window)
+        application = self.wnck_wrapper.call_window("get_application", window)
         if application:
             return self._property(application) == self.predicate
         else:
             return False
 
+    def _property(self, application):
+        return self.wnck_wrapper.call_application(
+            self._application_property_get_method(), application)
+
 
 class XidApplicationPredicate(ApplicationPredicate):
-    def _property(self, application):
-        return Wnck.Application.get_xid(application)
+    def _application_property_get_method(self):
+        return "get_xid"
 
     @property
     def predicate(self):
@@ -157,8 +162,8 @@ class XidApplicationPredicate(ApplicationPredicate):
 
 
 class NameApplicationPredicate(ApplicationPredicate):
-    def _property(self, application):
-        return Wnck.Application.get_name(application)
+    def _application_property_get_method(self):
+        return "get_name"
 
     @property
     def predicate(self):
@@ -166,8 +171,8 @@ class NameApplicationPredicate(ApplicationPredicate):
 
 
 class PidApplicationPredicate(ApplicationPredicate):
-    def _property(self, application):
-        return Wnck.Application.get_pid(application)
+    def _application_property_get_method(self):
+        return "get_pid"
 
     @property
     def predicate(self):

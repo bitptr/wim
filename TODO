@@ -16,7 +16,7 @@ Predicates:
 - Can predicates be combined (and, or)?
 
 Tests:
-- Then all commands can be unit tested without Wnck
+- All commands can be unit tested without Wnck by passing a fake WnckWrapper
 - Maybe crazy integration tests
 
 Bugs:
@@ -25,7 +25,6 @@ Bugs:
 - Moving causes the windows to grow in height (by a titlebar amount)
 
 Refactoring:
-- Move all Wnck into models.py
 - The parser not the selector should handle invalid predicates per selector
   type
 
@@ -34,3 +33,6 @@ Documentation:
 
 GTK:
 - pin wim-gtk to all workspaces
+- One time use
+- Command History
+- Keybindings

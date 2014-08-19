@@ -1,6 +1,4 @@
 import itertools
-import datetime
-import calendar
 
 from gi.repository import Wnck
 
@@ -9,42 +7,34 @@ from .wnck_state import WnckState
 
 class WnckWrapper(object):
     def __init__(self, avoid):
-        self.state = WnckState(avoid=avoid)
+        self._state = WnckState(avoid=avoid)
 
     def startup(self):
-        self.state.connect_signals()
+        self._state.connect_signals()
         return self
 
-    @property
-    def screen(self):
-        return self.state.screen
-
-    @property
-    def workspaces(self):
-        return self.state.workspaces
-
-    @property
     def active_window(self):
-        return self.state.active_window
+        return self._state.active_window
 
-    @property
     def prior_window(self):
-        return self.state.prior_window
+        return self._state.prior_window
 
-    @property
     def active_workspace(self):
-        return self.state.active_workspace
-
-    @property
-    def windows(self):
-        return self.state.windows
+        return self._state.active_workspace
 
     def active_workspace_windows(self):
-        return self.workspaces[self.active_workspace]
+        return self._state.workspaces[self.active_workspace()]
 
-    def geometry_for(self, window):
-        if window in self.windows and 'geometry' in self.windows[window]:
-            return self.windows[window]['geometry']
+    def windows_in_workspace(self, workspace):
+        return self._state.workspaces[workspace]
+
+    def all_windows(self):
+        return list(itertools.chain(*self._state.workspaces.values()))
+
+    def geometry_for_window(self, window):
+        if (window in self._state.windows
+                and 'geometry' in self._state.windows[window]):
+            return self._state.windows[window]['geometry']
         else:
             return Wnck.Window.get_geometry(window)
 
@@ -54,36 +44,6 @@ class WnckWrapper(object):
             Wnck.WindowGravity.STATIC,
             Wnck.WindowMoveResizeMask.X | Wnck.WindowMoveResizeMask.Y,
             x, y, w, h)
-
-    def move_window_to_workspace(self, window, workspace):
-        Wnck.Window.move_to_workspace(window, workspace)
-
-    def activate_window(self, window):
-        Wnck.Window.activate(window, self._now())
-
-    def activate_workspace(self, workspace):
-        Wnck.Workspace.activate(workspace, self._now())
-
-    def workspace_number(self, number):
-        return Wnck.Screen.get_workspace(self.screen, number)
-
-    def by_xid(self, xid):
-        return Wnck.Window.get(xid)
-
-    def windows_for_group(self, group):
-        return (Wnck.ClassGroup.get_windows(group) or [])
-
-    def by_group(self, group):
-        return Wnck.ClassGroup.get(group)
-
-    def all_windows(self):
-        return list(itertools.chain(*self.workspaces.values()))
-
-    def window_name(self, window):
-        return Wnck.Window.get_name(window)
-
-    def window_pid(self, window):
-        return Wnck.Window.get_pid(window)
 
     def is_window_of_type(self, window, human):
         win_type = Wnck.Window.get_window_type(window)
@@ -99,5 +59,25 @@ class WnckWrapper(object):
         }
         return (win_type == types[human])
 
-    def _now(self):
-        return calendar.timegm(datetime.datetime.utcnow().timetuple())
+    def get_motion_direction(self, attr):
+        if hasattr(Wnck.MotionDirection, attr):
+            return getattr(Wnck.MotionDirection, attr)
+
+    def call_workspace(self, method, *args):
+        return self._call(Wnck.Workspace, method, *args)
+
+    def call_window(self, method, *args):
+        return self._call(Wnck.Window, method, *args)
+
+    def call_class_group(self, method, *args):
+        return self._call(Wnck.ClassGroup, method, *args)
+
+    def call_application(self, method, *args):
+        return self._call(Wnck.Application, method, *args)
+
+    def call_screen(self, method, *args):
+        return self._call(Wnck.Screen, method, self._state.screen, *args)
+
+    def _call(self, obj, method, *args):
+        if hasattr(obj, method) and callable(getattr(obj, method)):
+            return getattr(obj, method)(*args)

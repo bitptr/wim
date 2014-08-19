@@ -1,26 +1,27 @@
 import itertools
 
-from gi.repository import Wnck
+from .util import now
 
 
 class Direction(object):
-    def __init__(self, model, count):
-        self.model = model
+    def __init__(self, wnck_wrapper, count):
+        self.wnck_wrapper = wnck_wrapper
         self.count = count
 
     def move(self, window):
-        (x, y, w, h) = self.model.geometry_for(window)
-        self.model.move_window_to_coordinates(
+        (x, y, w, h) = self.wnck_wrapper.geometry_for_window(window)
+        self.wnck_wrapper.move_window_to_coordinates(
             window, *self._coordinates(x, y, w, h))
 
     def jump(self, workspace):
         for _ in itertools.repeat(None, self.count):
             if workspace:
-                workspace = Wnck.Workspace.get_neighbor(
-                    workspace, self._motion())
+                workspace = self.wnck_wrapper.call_workspace(
+                    "get_neighbor", workspace,
+                    self.wnck_wrapper.get_motion_direction(self._motion()))
 
         if workspace is not None:
-            self.model.activate_workspace(workspace)
+            self.wnck_wrapper.call_workspace("activate", workspace, now())
 
     def _coordinates(self, x, y, w, h):
         return (x, y, w, h)
@@ -31,7 +32,7 @@ class RightDirection(Direction):
         return (x + self.count, y, w, h)
 
     def _motion(self):
-        return Wnck.MotionDirection.RIGHT
+        return "RIGHT"
 
 
 class LeftDirection(Direction):
@@ -39,7 +40,7 @@ class LeftDirection(Direction):
         return (x - self.count, y, w, h)
 
     def _motion(self):
-        return Wnck.MotionDirection.LEFT
+        return "LEFT"
 
 
 class UpDirection(Direction):
@@ -47,7 +48,7 @@ class UpDirection(Direction):
         return (x, y - self.count, w, h)
 
     def _motion(self):
-        return Wnck.MotionDirection.UP
+        return "UP"
 
 
 class DownDirection(Direction):
@@ -55,4 +56,4 @@ class DownDirection(Direction):
         return (x, y + self.count, w, h)
 
     def _motion(self):
-        return Wnck.MotionDirection.DOWN
+        return "DOWN"

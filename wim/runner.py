@@ -8,4 +8,4 @@ def Runner(expression, wnck_wrapper):
                                wnck_wrapper)
     command = CommandFactory(expression['command'])
     obj = ObjectFactory(expression['direction'], expression, wnck_wrapper)
-    return command(expression, selector, obj)
+    return command(expression, selector, obj, wnck_wrapper)

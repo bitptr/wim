@@ -1,13 +1,9 @@
-import datetime
-import calendar
-
-from gi.repository import Wnck
-
 from .exception import WimException
+from .util import now
 
 
 class UnknownCommand:
-    def __init__(self, expression, selector, obj):
+    def __init__(self, expression, selector, obj, wnck_wrapper):
         self.expression = expression
 
     def run(self):
@@ -16,9 +12,10 @@ class UnknownCommand:
 
 
 class WindowCommand:
-    def __init__(self, expression, selector, obj):
+    def __init__(self, expression, selector, obj, wnck_wrapper):
         self.expression = expression
         self.selector = selector
+        self.wnck_wrapper = wnck_wrapper
 
     def run(self):
         self.selector.runWindow(self._modification)
@@ -26,131 +23,129 @@ class WindowCommand:
 
 class ShadeCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.shade(selection)
+        self.wnck_wrapper.call_window("shade", selection)
 
 
 class ToggleShadeCommand(WindowCommand):
     def _modification(self, selection):
-        if Wnck.Window.is_shaded(selection):
-            Wnck.Window.unshade(selection)
+        if self.wnck_wrapper.call_window("is_shaded", selection):
+            self.wnck_wrapper.call_window("unshade", selection)
         else:
-            Wnck.Window.shade(selection)
+            self.wnck_wrapper.call_window("shade", selection)
 
 
 class CloseCommand(WindowCommand):
     def _modification(self, selection):
-        now = calendar.timegm(datetime.datetime.utcnow().timetuple())
-        Wnck.Window.close(selection, now)
+        self.wnck_wrapper.call_window("close", selection, now())
 
 
 class PinCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.pin(selection)
+        self.wnck_wrapper.call_window("pin", selection)
 
 
 class UnpinCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.unpin(selection)
+        self.wnck_wrapper.call_window("unpin", selection)
 
 
 class StickCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.stick(selection)
+        self.wnck_wrapper.call_window("stick", selection)
 
 
 class UnstickCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.unstick(selection)
+        self.wnck_wrapper.call_window("unstick", selection)
 
 
 class SkipPagerCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.set_skip_pager(selection, True)
+        self.wnck_wrapper.call_window("set_skip_pager", selection, True)
 
 
 class SkipTasklistCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.set_skip_tasklist(selection, True)
+        self.wnck_wrapper.call_window("set_skip_tasklist", selection, True)
 
 
 class FullscreenCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.set_fullscreen(selection, True)
+        self.wnck_wrapper.call_window("set_fullscreen", selection, True)
 
 
 class MaximizeVerticalCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.maximize_vertically(selection)
+        self.wnck_wrapper.call_window("maximize_vertically", selection)
 
 
 class UnmaximizeVerticalCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.unmaximize_vertically(selection)
+        self.wnck_wrapper.call_window("unmaximize_vertically", selection)
 
 
 class MaximizeHorizontalCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.maximize_horizontally(selection)
+        self.wnck_wrapper.call_window("maximize_horizontally", selection)
 
 
 class UnmaximizeHorizontalCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.unmaximize_horizontally(selection)
+        self.wnck_wrapper.call_window("unmaximize_horizontally", selection)
 
 
 class MaximizeCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.maximize(selection)
+        self.wnck_wrapper.call_window("maximize", selection)
 
 
 class UnmaximizeCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.unmaximize(selection)
+        self.wnck_wrapper.call_window("unmaximize", selection)
 
 
 class MinimizeCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.minimize(selection)
+        self.wnck_wrapper.call_window("minimize", selection)
 
 
 class UnminimizeCommand(WindowCommand):
     def _modification(self, selection):
-        now = calendar.timegm(datetime.datetime.utcnow().timetuple())
-        Wnck.Window.unminimize(selection, now)
+        self.wnck_wrapper.call_window("unminimize", selection, now())
 
 
 class AboveCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.make_above(selection)
+        self.wnck_wrapper.call_window("make_above", selection)
 
 
 class UnaboveCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.unmake_above(selection)
+        self.wnck_wrapper.call_window("unmake_above", selection)
 
 
 class BelowCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.make_below(selection)
+        self.wnck_wrapper.call_window("make_below", selection)
 
 
 class UnbelowCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.unmake_below(selection)
+        self.wnck_wrapper.call_window("unmake_below", selection)
 
 
 class KeyboardMoveCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.keyboard_move(selection)
+        self.wnck_wrapper.call_window("keyboard_move", selection)
 
 
 class KeyboardSizeCommand(WindowCommand):
     def _modification(self, selection):
-        Wnck.Window.keyboard_size(selection)
+        self.wnck_wrapper.call_window("keyboard_size", selection)
 
 
 class ActivateCommand(object):
-    def __init__(self, expression, selector, obj):
+    def __init__(self, expression, selector, obj, wnck_wrapper):
         self.selector = selector
 
     def run(self):
@@ -158,7 +153,7 @@ class ActivateCommand(object):
 
 
 class MoveCommand(object):
-    def __init__(self, expression, selector, obj):
+    def __init__(self, expression, selector, obj, wnck_wrapper):
         self.selector = selector
         self.obj = obj
 
