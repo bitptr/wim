@@ -25,6 +25,10 @@ Run it:
 
     % wim-gtk
 
+Install it as a user:
+
+    % python setup.py install --user
+
 Style Guide
 -----------
 

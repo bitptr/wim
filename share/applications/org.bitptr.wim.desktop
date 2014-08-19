@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=wim
+GenericName=Window Editor
+Comment=Manipulate your windows with a cryptic language
+Exec=wim-gtk
+Terminal=false
+Type=Application
+StartupNotify=false
+DBusActivatable=false
+Categories=GTK;Utility;
+Keywords=wm;windows;editor;
+Version=1.0

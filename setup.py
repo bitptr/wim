@@ -25,12 +25,22 @@ class installer(install):
     def run(self):
         install.do_egg_install(self)
 
-        man_dir = abspath("./man/")
+        self._install_data("share/applications")
+        self._install_data("man")
 
-        output = subprocess.Popen([os.path.join(man_dir, "install.sh")],
+    def _install_data(self, directory):
+        abs_d = abspath("./%s/" % directory)
+        prefix = self.prefix
+        if prefix is None:
+            if self.user:
+                home = os.getenv('HOME')
+                prefix = "%s/.local" % home
+            else:
+                raise "Cannot figure out the prefix"
+        output = subprocess.Popen([os.path.join(abs_d, "install.sh")],
                 stdout=subprocess.PIPE,
-                cwd=man_dir,
-                env=dict({"PREFIX": self.prefix}, **dict(os.environ))).communicate()[0]
+                cwd=abs_d,
+                env=dict({"PREFIX": prefix}, **dict(os.environ))).communicate()[0]
         print output
 
 
