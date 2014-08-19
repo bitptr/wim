@@ -6,10 +6,18 @@ class XidWindowsPredicate(object):
     def __init__(self, predicate_expr, wnck_wrapper, is_global):
         self.predicate_expr = predicate_expr
         self.wnck_wrapper = wnck_wrapper
+        self.is_global = is_global
 
     def windows(self):
-        return maybe([], singleton,
-                     self.wnck_wrapper.call_window("get", self.predicate))
+        return maybe([], singleton, self._window())
+
+    def _window(self):
+        window = self.wnck_wrapper.call_window("get", self.predicate)
+        if (self.is_global
+                or window in self.wnck_wrapper.active_workspace_windows()):
+            return window
+        else:
+            return None
 
     @property
     def predicate(self):
@@ -20,14 +28,22 @@ class ClassWindowsPredicate(object):
     def __init__(self, predicate_expr, wnck_wrapper, is_global):
         self.predicate_expr = predicate_expr
         self.wnck_wrapper = wnck_wrapper
+        self.is_global = is_global
 
     def windows(self):
         def group_windows(group):
             return (self.wnck_wrapper.call_class_group("get_windows", group)
                     or [])
 
-        return maybe([], group_windows,
-                     self.wnck_wrapper.call_class_group("get", self.predicate))
+        all_windows = maybe([], group_windows,
+                            self.wnck_wrapper.call_class_group(
+                                "get", self.predicate))
+        if self.is_global:
+            return all_windows
+        else:
+            current_windows = self.wnck_wrapper.active_workspace_windows()
+            return [window for window in all_windows
+                    if window in current_windows]
 
     @property
     def predicate(self):

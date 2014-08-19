@@ -20,8 +20,6 @@ Tests:
 - Maybe crazy integration tests
 
 Bugs:
-- XidWindowsPredicate and ClassGroupPredicate don't respect workspace
-  restrictions
 - Moving causes the windows to grow in height (by a titlebar amount)
 
 Refactoring:
